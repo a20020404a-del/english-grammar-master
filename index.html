@@ -54,7 +54,19 @@ body{
   font-weight:700;
   letter-spacing:0.02em;
   white-space:nowrap;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  gap:6px;
+  user-select:none;
 }
+.nav-toggle-arrow{
+  font-size:0.7rem;
+  transition:transform 0.25s ease;
+  opacity:0.85;
+  display:inline-block;
+}
+.sidebar.collapsed .nav-toggle-arrow{transform:rotate(-90deg)}
 .sidebar-sub{
   font-size:0.72rem;
   opacity:0.75;
@@ -91,6 +103,14 @@ body{
   flex-wrap:wrap;
   gap:4px;
   padding:0 16px 10px;
+  overflow:hidden;
+  max-height:200px;
+  transition:max-height 0.3s ease, padding 0.3s ease;
+}
+.sidebar.collapsed .nav-list{
+  max-height:0 !important;
+  padding-top:0;
+  padding-bottom:0;
 }
 .nav-item button{
   background:rgba(255,255,255,0.15);
@@ -498,7 +518,10 @@ body{
 
 <nav class="sidebar" id="sidebar">
   <div class="sidebar-header">
-    <div class="sidebar-title">英文法マスター</div>
+    <div class="sidebar-title" onclick="toggleNav()">
+      英文法マスター
+      <span class="nav-toggle-arrow">▼</span>
+    </div>
     <div class="sidebar-sub">社会人のための全16ユニット</div>
   </div>
   <div class="progress-wrap">
@@ -553,6 +576,11 @@ function toggleDone(id){
   saveDone();updateProgress();
   const btn=document.getElementById('done-btn-'+id);
   if(btn){btn.textContent=done.has(id)?'✓ 完了済み':'このユニットを完了にする';btn.className='done-btn'+(done.has(id)?' done':'')}
+}
+
+// ── NAV TOGGLE ────────────────────────────────────────────────────────────────
+function toggleNav(){
+  document.getElementById('sidebar').classList.toggle('collapsed');
 }
 
 // ── NAV ───────────────────────────────────────────────────────────────────────
