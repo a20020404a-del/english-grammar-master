@@ -3,636 +3,977 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>英文法完全マスター</title>
+<title>GRAMMAR//OS — 英文法システム</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Noto+Sans+JP:wght@300;400;500;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <style>
 :root {
-  --primary: #4F46E5;
-  --primary-light: #818CF8;
-  --accent: #10B981;
-  --bg: #F8FAFC;
-  --card: #FFFFFF;
-  --text: #1E293B;
-  --muted: #64748B;
-  --border: #E2E8F0;
-  --correct: #D1FAE5;
-  --correct-border: #10B981;
-  --reveal-bg: #EFF6FF;
+  --c: #00E5FF;
+  --m: #FF0066;
+  --g: #FFD700;
+  --bg: #03080F;
+  --bg2: #060D1A;
+  --panel: rgba(6,16,32,0.92);
+  --border: rgba(0,229,255,0.18);
+  --border2: rgba(0,229,255,0.08);
+  --text: #C8E6F5;
+  --muted: #4A7A99;
+  --font-head: 'Orbitron', sans-serif;
+  --font-body: 'Noto Sans JP', sans-serif;
+  --font-mono: 'Space Mono', monospace;
 }
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--text); display: flex; min-height: 100vh; }
+*{box-sizing:border-box;margin:0;padding:0}
 
-/* Sidebar */
-#sidebar {
-  width: 260px; min-width: 260px; background: var(--primary); color: white;
-  height: 100vh; position: sticky; top: 0; overflow-y: auto; padding-bottom: 2rem;
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--c);border-radius:2px;opacity:.5}
+
+/* ── BASE ── */
+body{
+  font-family:var(--font-body);
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  overflow-x:hidden;
 }
-#sidebar h1 { font-size: 1.1rem; padding: 1.5rem 1rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.2); line-height: 1.4; }
-#sidebar h1 span { font-size: 0.75rem; display: block; opacity: 0.7; margin-top: 0.3rem; }
-.nav-item {
-  display: flex; align-items: center; gap: 0.6rem; padding: 0.65rem 1rem;
-  cursor: pointer; transition: background 0.15s; font-size: 0.85rem; border-left: 3px solid transparent;
+
+/* ── CANVAS BG ── */
+#bg-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;opacity:.35}
+
+/* ── SCANLINES ── */
+body::after{
+  content:'';position:fixed;top:0;left:0;right:0;bottom:0;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.05) 2px,rgba(0,0,0,.05) 4px);
+  pointer-events:none;z-index:1;
 }
-.nav-item:hover { background: rgba(255,255,255,0.1); }
-.nav-item.active { background: rgba(255,255,255,0.15); border-left-color: #A5F3FC; }
-.nav-num { background: rgba(255,255,255,0.2); border-radius: 4px; padding: 1px 6px; font-size: 0.75rem; min-width: 24px; text-align: center; }
-.nav-item.done .nav-num { background: var(--accent); }
 
-/* Main */
-#main { flex: 1; padding: 2rem; max-width: 900px; }
-.unit { display: none; }
-.unit.active { display: block; }
+/* ── LAYOUT ── */
+#app{position:relative;z-index:2;display:flex;min-height:100vh}
 
-.unit-header { margin-bottom: 1.5rem; }
-.unit-tag { font-size: 0.75rem; color: var(--primary); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
-.unit-header h2 { font-size: 1.8rem; margin: 0.3rem 0 0.5rem; }
-.unit-header p { color: var(--muted); font-size: 0.95rem; line-height: 1.6; }
-
-.section { background: var(--card); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.2rem; border: 1px solid var(--border); }
-.section h3 { font-size: 1rem; color: var(--primary); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.4rem; }
-.section h3::before { content: ''; display: inline-block; width: 4px; height: 16px; background: var(--primary); border-radius: 2px; }
-
-.point-list { list-style: none; }
-.point-list li { padding: 0.5rem 0; border-bottom: 1px solid var(--border); font-size: 0.9rem; line-height: 1.6; }
-.point-list li:last-child { border-bottom: none; }
-.point-list li strong { color: var(--primary); }
-
-.example-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
-.example-table th { background: var(--bg); padding: 0.5rem 0.75rem; text-align: left; font-size: 0.8rem; color: var(--muted); border-bottom: 2px solid var(--border); }
-.example-table td { padding: 0.6rem 0.75rem; border-bottom: 1px solid var(--border); vertical-align: top; }
-.example-table tr:last-child td { border-bottom: none; }
-.en { font-weight: 600; color: var(--text); }
-.ja { color: var(--muted); font-size: 0.83rem; }
-
-/* Formula boxes */
-.formula { background: #EEF2FF; border-left: 4px solid var(--primary); border-radius: 0 8px 8px 0; padding: 0.75rem 1rem; margin: 0.75rem 0; font-size: 0.9rem; }
-.formula code { font-family: monospace; font-size: 0.95rem; color: var(--primary); }
-
-/* Quiz */
-.quiz-section { background: var(--card); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.2rem; border: 2px solid var(--primary-light); }
-.quiz-section h3 { font-size: 1rem; color: var(--primary); margin-bottom: 1.2rem; }
-.quiz-item { margin-bottom: 1rem; background: var(--bg); border-radius: 8px; padding: 1rem; }
-.quiz-item .q-text { font-size: 0.92rem; margin-bottom: 0.6rem; }
-.quiz-item .q-num { display: inline-block; background: var(--primary); color: white; border-radius: 4px; padding: 1px 7px; font-size: 0.75rem; margin-right: 0.4rem; }
-.reveal-btn {
-  background: white; border: 1.5px solid var(--primary); color: var(--primary);
-  border-radius: 6px; padding: 0.35rem 0.9rem; font-size: 0.82rem; cursor: pointer;
-  transition: all 0.15s; margin-top: 0.4rem;
+/* ── SIDEBAR ── */
+#sidebar{
+  width:280px;min-width:280px;
+  background:linear-gradient(180deg,rgba(0,10,25,.98) 0%,rgba(3,10,22,.98) 100%);
+  border-right:1px solid var(--border);
+  height:100vh;position:sticky;top:0;
+  overflow-y:auto;display:flex;flex-direction:column;
+  box-shadow:4px 0 30px rgba(0,229,255,.05);
 }
-.reveal-btn:hover { background: var(--primary); color: white; }
-.answer { display: none; margin-top: 0.6rem; background: var(--reveal-bg); border-radius: 6px; padding: 0.6rem 0.8rem; font-size: 0.9rem; }
-.answer.shown { display: block; }
-.answer .ans-en { font-weight: 700; color: var(--primary); }
-.answer .ans-note { font-size: 0.8rem; color: var(--muted); margin-top: 0.2rem; }
+.sidebar-head{
+  padding:1.8rem 1.4rem 1.2rem;
+  border-bottom:1px solid var(--border2);
+}
+.sidebar-logo{
+  font-family:var(--font-head);
+  font-size:.65rem;
+  letter-spacing:.25em;
+  color:var(--c);
+  opacity:.7;
+  margin-bottom:.5rem;
+}
+.sidebar-title{
+  font-family:var(--font-head);
+  font-size:1rem;
+  font-weight:900;
+  letter-spacing:.06em;
+  line-height:1.3;
+  background:linear-gradient(135deg,var(--c),#80F0FF);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.sidebar-sub{font-size:.72rem;color:var(--muted);margin-top:.3rem;letter-spacing:.03em}
 
-.nav-btns { display: flex; gap: 1rem; margin-top: 1.5rem; }
-.btn { padding: 0.6rem 1.4rem; border-radius: 8px; border: none; cursor: pointer; font-size: 0.9rem; font-weight: 600; transition: all 0.15s; }
-.btn-outline { background: white; border: 1.5px solid var(--primary); color: var(--primary); }
-.btn-outline:hover { background: var(--primary); color: white; }
-.btn-primary { background: var(--primary); color: white; }
-.btn-primary:hover { background: #3730A3; }
+/* progress */
+.prog-wrap{padding:.9rem 1.4rem;border-bottom:1px solid var(--border2)}
+.prog-label{font-family:var(--font-mono);font-size:.65rem;color:var(--muted);letter-spacing:.1em;margin-bottom:.4rem;display:flex;justify-content:space-between}
+.prog-track{height:3px;background:rgba(0,229,255,.12);border-radius:2px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--c),#0099FF);border-radius:2px;transition:width .5s cubic-bezier(.4,0,.2,1);box-shadow:0 0 8px var(--c)}
 
-.progress-bar { height: 6px; background: var(--border); border-radius: 3px; margin: 0.5rem 0 1.5rem; }
-.progress-fill { height: 100%; background: var(--accent); border-radius: 3px; transition: width 0.3s; }
+/* nav items */
+#nav-list{flex:1;padding:.5rem 0}
+.nav-item{
+  display:flex;align-items:center;gap:.75rem;
+  padding:.55rem 1.4rem;cursor:pointer;
+  transition:all .2s;position:relative;
+  border-left:2px solid transparent;
+}
+.nav-item:hover{background:rgba(0,229,255,.04);border-left-color:rgba(0,229,255,.3)}
+.nav-item.active{background:rgba(0,229,255,.07);border-left-color:var(--c)}
+.nav-item.active::after{
+  content:'';position:absolute;right:0;top:50%;transform:translateY(-50%);
+  width:4px;height:60%;background:var(--c);border-radius:2px;
+  box-shadow:0 0 8px var(--c);
+}
+.nav-icon-wrap{
+  width:32px;height:32px;border-radius:6px;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(0,229,255,.06);border:1px solid rgba(0,229,255,.15);
+  flex-shrink:0;transition:all .2s;
+}
+.nav-item.active .nav-icon-wrap{background:rgba(0,229,255,.12);border-color:rgba(0,229,255,.4);box-shadow:0 0 12px rgba(0,229,255,.2)}
+.nav-item.done .nav-icon-wrap{background:rgba(0,229,255,.08);border-color:rgba(0,229,255,.3)}
+.nav-icon-wrap svg{width:18px;height:18px}
+.nav-text{font-size:.8rem;line-height:1.3;flex:1}
+.nav-text-jp{display:block;color:var(--text);font-weight:500}
+.nav-text-num{display:block;font-family:var(--font-mono);font-size:.6rem;color:var(--muted);letter-spacing:.1em}
+.nav-done-mark{width:14px;height:14px;border-radius:50%;background:var(--c);box-shadow:0 0 6px var(--c);display:flex;align-items:center;justify-content:center;flex-shrink:0;opacity:0;transition:opacity .3s}
+.nav-item.done .nav-done-mark{opacity:1}
+.nav-done-mark svg{width:8px;height:8px}
 
-@media (max-width: 768px) {
-  body { flex-direction: column; }
-  #sidebar { width: 100%; height: auto; position: relative; }
-  #sidebar nav { display: flex; flex-wrap: wrap; padding: 0.5rem; gap: 0.3rem; }
-  .nav-item { border-radius: 6px; border-left: none; font-size: 0.78rem; padding: 0.4rem 0.6rem; }
-  #main { padding: 1rem; }
+/* ── MAIN ── */
+#main{flex:1;padding:2rem 2.5rem;min-width:0}
+
+/* ── UNIT HEADER ── */
+.unit-hdr{margin-bottom:2rem;display:flex;gap:1.5rem;align-items:flex-start}
+.unit-icon-hero{
+  width:80px;height:80px;flex-shrink:0;
+  border-radius:16px;display:flex;align-items:center;justify-content:center;
+  border:1px solid;position:relative;overflow:hidden;
+}
+.unit-icon-hero::before{
+  content:'';position:absolute;inset:0;
+  background:inherit;filter:blur(20px);opacity:.3;transform:scale(1.5);
+}
+.unit-icon-hero svg{width:48px;height:48px;position:relative;z-index:1}
+.unit-hdr-text{flex:1}
+.unit-tag{
+  font-family:var(--font-mono);font-size:.65rem;letter-spacing:.2em;
+  color:var(--c);opacity:.8;margin-bottom:.4rem;
+}
+.unit-hdr h2{
+  font-family:var(--font-head);font-size:1.6rem;font-weight:700;
+  letter-spacing:.04em;margin-bottom:.4rem;line-height:1.2;
+}
+.unit-sub{font-size:.82rem;color:var(--muted);font-weight:300;letter-spacing:.02em}
+.unit-desc{
+  font-size:.88rem;color:var(--text);opacity:.75;line-height:1.7;
+  margin-top:.5rem;max-width:560px;
+}
+
+/* glowing divider */
+.glow-line{
+  height:1px;
+  background:linear-gradient(90deg,var(--c) 0%,rgba(0,229,255,.1) 60%,transparent 100%);
+  margin:1.5rem 0;box-shadow:0 0 6px rgba(0,229,255,.3);
+}
+
+/* ── CARDS ── */
+.card{
+  background:var(--panel);
+  border:1px solid var(--border2);
+  border-radius:12px;padding:1.4rem 1.6rem;
+  margin-bottom:1.2rem;
+  backdrop-filter:blur(12px);
+  transition:border-color .25s,box-shadow .25s;
+}
+.card:hover{border-color:var(--border);box-shadow:0 0 20px rgba(0,229,255,.04)}
+.card-title{
+  font-family:var(--font-mono);font-size:.7rem;letter-spacing:.15em;
+  color:var(--c);margin-bottom:1rem;display:flex;align-items:center;gap:.6rem;
+}
+.card-title::before{content:'//';opacity:.4}
+
+/* points */
+.point-item{
+  padding:.7rem 0;border-bottom:1px solid rgba(0,229,255,.07);
+  font-size:.87rem;line-height:1.7;
+}
+.point-item:last-child{border-bottom:none}
+.point-label{
+  font-family:var(--font-mono);font-size:.72rem;color:var(--c);
+  letter-spacing:.05em;margin-bottom:.25rem;opacity:.9;
+}
+.point-body{color:rgba(200,230,245,.75)}
+.point-body strong{color:var(--c);font-weight:600}
+
+/* examples table */
+.ex-table{width:100%;border-collapse:collapse;font-size:.86rem}
+.ex-table thead tr{border-bottom:1px solid rgba(0,229,255,.15)}
+.ex-table th{
+  font-family:var(--font-mono);font-size:.62rem;letter-spacing:.12em;
+  color:var(--muted);padding:.4rem .6rem .6rem;text-align:left;
+}
+.ex-table td{padding:.55rem .6rem;border-bottom:1px solid rgba(0,229,255,.05);vertical-align:top}
+.ex-table tr:last-child td{border-bottom:none}
+.ex-table tr:hover td{background:rgba(0,229,255,.02)}
+.en-cell{font-weight:600;color:#D4EDFA;letter-spacing:.01em}
+.ja-cell{color:var(--muted);font-size:.8rem;padding-top:.1rem}
+
+/* formula */
+.formula{
+  background:rgba(0,229,255,.04);
+  border-left:3px solid var(--c);
+  border-radius:0 8px 8px 0;
+  padding:.65rem 1rem;margin:.6rem 0;
+  font-family:var(--font-mono);font-size:.82rem;color:var(--c);
+  box-shadow:inset 3px 0 15px rgba(0,229,255,.05);
+}
+
+/* ── QUIZ ── */
+.quiz-card{
+  background:rgba(3,8,20,.9);
+  border:1px solid rgba(255,0,102,.2);
+  border-radius:12px;padding:1.4rem 1.6rem;
+  margin-bottom:1.2rem;
+}
+.quiz-header{
+  font-family:var(--font-mono);font-size:.7rem;letter-spacing:.15em;
+  color:var(--m);margin-bottom:1.2rem;display:flex;align-items:center;gap:.6rem;
+}
+.quiz-header::before{content:'//';opacity:.4}
+.q-item{
+  background:rgba(255,0,102,.03);
+  border:1px solid rgba(255,0,102,.1);
+  border-radius:8px;padding:1rem 1.1rem;margin-bottom:.8rem;
+  transition:border-color .2s;
+}
+.q-item:hover{border-color:rgba(255,0,102,.2)}
+.q-num{
+  font-family:var(--font-mono);font-size:.6rem;letter-spacing:.1em;
+  color:var(--m);opacity:.8;margin-bottom:.4rem;
+}
+.q-text{font-size:.9rem;line-height:1.6;font-weight:500}
+.q-jp{
+  font-size:.82rem;color:var(--muted);margin:.3rem 0 .6rem;
+  padding-left:.6rem;border-left:2px solid rgba(255,0,102,.3);
+}
+.reveal-btn{
+  background:transparent;border:1px solid rgba(255,0,102,.4);
+  color:rgba(255,0,102,.8);border-radius:5px;
+  padding:.3rem .85rem;font-size:.75rem;
+  font-family:var(--font-mono);letter-spacing:.08em;
+  cursor:pointer;transition:all .2s;
+}
+.reveal-btn:hover{background:rgba(255,0,102,.1);border-color:var(--m);color:var(--m);box-shadow:0 0 12px rgba(255,0,102,.2)}
+.answer{
+  display:none;margin-top:.7rem;
+  background:rgba(0,229,255,.04);
+  border:1px solid rgba(0,229,255,.2);
+  border-radius:6px;padding:.7rem .9rem;
+}
+.answer.shown{display:block;animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+.ans-en{
+  font-family:var(--font-mono);font-size:.88rem;font-weight:700;
+  color:var(--c);letter-spacing:.02em;
+  text-shadow:0 0 20px rgba(0,229,255,.4);
+}
+.ans-note{font-size:.75rem;color:var(--muted);margin-top:.3rem;line-height:1.5}
+
+/* ── BUTTONS ── */
+.btn-row{display:flex;gap:.8rem;margin-top:1.4rem;flex-wrap:wrap}
+.btn{
+  padding:.55rem 1.3rem;border-radius:6px;
+  border:none;cursor:pointer;
+  font-family:var(--font-mono);font-size:.75rem;letter-spacing:.08em;
+  transition:all .2s;font-weight:700;
+}
+.btn-outline{
+  background:transparent;border:1px solid rgba(0,229,255,.4);color:var(--c);
+}
+.btn-outline:hover{background:rgba(0,229,255,.08);box-shadow:0 0 15px rgba(0,229,255,.15);border-color:var(--c)}
+.btn-primary{
+  background:linear-gradient(135deg,rgba(0,180,220,.9),rgba(0,100,200,.9));
+  color:#fff;border:1px solid var(--c);
+  box-shadow:0 0 15px rgba(0,229,255,.2);
+}
+.btn-primary:hover{box-shadow:0 0 25px rgba(0,229,255,.35);transform:translateY(-1px)}
+.btn-done{
+  background:linear-gradient(135deg,rgba(0,229,255,.15),rgba(0,150,220,.1));
+  color:var(--c);border:1px solid rgba(0,229,255,.4);
+}
+.btn-done:hover{background:rgba(0,229,255,.2);box-shadow:0 0 20px rgba(0,229,255,.2)}
+
+/* complete banner */
+.complete-banner{
+  text-align:center;padding:2rem;
+  border:1px solid rgba(255,215,0,.3);border-radius:12px;
+  background:rgba(255,215,0,.04);margin-top:1rem;
+}
+.complete-banner h3{
+  font-family:var(--font-head);font-size:1.1rem;
+  color:var(--g);letter-spacing:.1em;
+  text-shadow:0 0 20px rgba(255,215,0,.4);
+  margin-bottom:.4rem;
+}
+.complete-banner p{font-size:.82rem;color:var(--muted)}
+
+/* ── MOBILE ── */
+@media(max-width:768px){
+  #sidebar{width:100%;min-width:0;height:auto;position:relative;border-right:none;border-bottom:1px solid var(--border)}
+  #nav-list{display:flex;flex-wrap:wrap;gap:.3rem;padding:.8rem}
+  .nav-item{border-left:none;border:1px solid var(--border2);border-radius:8px;padding:.4rem .6rem;width:auto}
+  .nav-item.active{border-color:rgba(0,229,255,.4)}
+  .nav-item.active::after{display:none}
+  .nav-text-jp{font-size:.72rem}
+  .nav-text-num{display:none}
+  .nav-done-mark,.nav-icon-wrap{display:none}
+  .sidebar-head,.prog-wrap{display:none}
+  #app{flex-direction:column}
+  #main{padding:1.2rem}
+  .unit-hdr{flex-direction:column;gap:1rem}
+  .unit-icon-hero{width:60px;height:60px}
 }
 </style>
 </head>
 <body>
-
-<nav id="sidebar">
-  <h1>英文法完全マスター<span>初級〜中級対応</span></h1>
-  <div style="padding: 0.75rem 1rem;">
-    <div style="font-size:0.75rem;opacity:0.7;margin-bottom:4px;">進捗</div>
-    <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
-    <div style="font-size:0.75rem;opacity:0.7;" id="progress-text">0 / 16 単元完了</div>
-  </div>
-  <nav id="nav-list"></nav>
-</nav>
-
-<main id="main"></main>
+<canvas id="bg-canvas"></canvas>
+<div id="app">
+  <nav id="sidebar">
+    <div class="sidebar-head">
+      <div class="sidebar-logo">SYSTEM // ACTIVE</div>
+      <div class="sidebar-title">GRAMMAR<br>// OS</div>
+      <div class="sidebar-sub">英文法 マスターシステム / 初〜中級</div>
+    </div>
+    <div class="prog-wrap">
+      <div class="prog-label">
+        <span>PROGRESS</span>
+        <span id="prog-label-val">0 / 16</span>
+      </div>
+      <div class="prog-track"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+    </div>
+    <div id="nav-list"></div>
+  </nav>
+  <main id="main"></main>
+</div>
 
 <script>
+/* ── BACKGROUND CANVAS ── */
+const canvas = document.getElementById('bg-canvas');
+const ctx = canvas.getContext('2d');
+let W, H, particles = [];
+
+function resize(){
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+
+function initParticles(){
+  particles = [];
+  const count = Math.floor((W * H) / 18000);
+  for(let i=0;i<count;i++){
+    particles.push({
+      x: Math.random()*W, y: Math.random()*H,
+      vx: (Math.random()-.5)*.25, vy: (Math.random()-.5)*.25,
+      r: Math.random()*.8+.2,
+      a: Math.random()*.6+.1,
+      c: Math.random()>.7 ? '#FF0066' : '#00E5FF'
+    });
+  }
+}
+
+function drawGrid(){
+  ctx.strokeStyle = 'rgba(0,229,255,0.03)';
+  ctx.lineWidth = 1;
+  const step = 60;
+  for(let x=0;x<W;x+=step){
+    ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();
+  }
+  for(let y=0;y<H;y+=step){
+    ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();
+  }
+}
+
+function animFrame(){
+  ctx.clearRect(0,0,W,H);
+  drawGrid();
+  particles.forEach(p=>{
+    p.x+=p.vx; p.y+=p.vy;
+    if(p.x<0)p.x=W; if(p.x>W)p.x=0;
+    if(p.y<0)p.y=H; if(p.y>H)p.y=0;
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fillStyle = p.c;
+    ctx.globalAlpha = p.a;
+    ctx.fill();
+    ctx.globalAlpha = 1;
+  });
+  // draw connections
+  particles.forEach((p,i)=>{
+    particles.slice(i+1).forEach(q=>{
+      const dx=p.x-q.x, dy=p.y-q.y, d=Math.sqrt(dx*dx+dy*dy);
+      if(d<100){
+        ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);
+        ctx.strokeStyle='rgba(0,229,255,'+(0.04*(1-d/100))+')';
+        ctx.lineWidth=.5;ctx.stroke();
+      }
+    });
+  });
+  requestAnimationFrame(animFrame);
+}
+resize(); initParticles(); animFrame();
+window.addEventListener('resize',()=>{resize();initParticles();});
+
+/* ── SVG ICONS ── */
+const icons = [
+  // 1 SVO blocks
+  `<svg viewBox="0 0 48 48" fill="none"><rect x="2" y="17" width="12" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><text x="8" y="27" text-anchor="middle" font-size="6" fill="currentColor" font-family="Space Mono">S</text><rect x="18" y="17" width="12" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><text x="24" y="27" text-anchor="middle" font-size="6" fill="currentColor" font-family="Space Mono">V</text><rect x="34" y="17" width="12" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><text x="40" y="27" text-anchor="middle" font-size="6" fill="currentColor" font-family="Space Mono">O</text><path d="M14.5 24h3M30.5 24h3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M17 24l1-1.5M17 24l1 1.5M31 24l1-1.5M31 24l1 1.5" stroke="currentColor" stroke-width="1.2"/></svg>`,
+  // 2 Noun - label tag
+  `<svg viewBox="0 0 48 48" fill="none"><path d="M8 12h20l10 12-10 12H8z" stroke="currentColor" stroke-width="1.5"/><circle cx="15" cy="24" r="2.5" fill="currentColor" opacity=".6"/><line x1="20" y1="19" x2="32" y2="19" stroke="currentColor" stroke-width="1.2" stroke-dasharray="2,2"/><line x1="20" y1="24" x2="34" y2="24" stroke="currentColor" stroke-width="1.2" stroke-dasharray="2,2"/><line x1="20" y1="29" x2="30" y2="29" stroke="currentColor" stroke-width="1.2" stroke-dasharray="2,2"/></svg>`,
+  // 3 Adj - color strokes
+  `<svg viewBox="0 0 48 48" fill="none"><rect x="6" y="10" width="36" height="8" rx="2" stroke="currentColor" stroke-width="1.5" opacity=".8"/><rect x="6" y="22" width="28" height="8" rx="2" stroke="currentColor" stroke-width="1.5" opacity=".6"/><rect x="6" y="34" width="20" height="8" rx="2" stroke="currentColor" stroke-width="1.5" opacity=".4"/><text x="24" y="16" text-anchor="middle" font-size="5.5" fill="currentColor" font-family="Space Mono" opacity=".9">BIG</text><text x="20" y="28" text-anchor="middle" font-size="5.5" fill="currentColor" font-family="Space Mono" opacity=".7">OLD</text><text x="16" y="40" text-anchor="middle" font-size="5.5" fill="currentColor" font-family="Space Mono" opacity=".5">RED</text></svg>`,
+  // 4 Adv - arrow + speed
+  `<svg viewBox="0 0 48 48" fill="none"><path d="M6 24h30M30 18l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="8" y1="16" x2="16" y2="16" stroke="currentColor" stroke-width="1" opacity=".4"/><line x1="6" y1="20" x2="14" y2="20" stroke="currentColor" stroke-width="1" opacity=".3"/><line x1="8" y1="28" x2="16" y2="28" stroke="currentColor" stroke-width="1" opacity=".4"/><line x1="6" y1="32" x2="14" y2="32" stroke="currentColor" stroke-width="1" opacity=".3"/></svg>`,
+  // 5 Compare - bars
+  `<svg viewBox="0 0 48 48" fill="none"><rect x="8" y="28" width="12" height="14" rx="1" stroke="currentColor" stroke-width="1.5" opacity=".6"/><rect x="28" y="14" width="12" height="28" rx="1" stroke="currentColor" stroke-width="1.5"/><line x1="4" y1="42" x2="44" y2="42" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M22 21h4M22 21l1.5-2M22 21l1.5 2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>`,
+  // 6 Negative - X circle
+  `<svg viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="18" stroke="currentColor" stroke-width="1.5"/><path d="M14 14l20 20M34 14l-20 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`,
+  // 7 Modal - key
+  `<svg viewBox="0 0 48 48" fill="none"><circle cx="16" cy="24" r="10" stroke="currentColor" stroke-width="1.5"/><circle cx="16" cy="24" r="4" stroke="currentColor" stroke-width="1.5" opacity=".5"/><path d="M26 24h16M38 24v4M34 24v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`,
+  // 8 Prep - dot in container
+  `<svg viewBox="0 0 48 48" fill="none"><rect x="6" y="6" width="36" height="36" rx="3" stroke="currentColor" stroke-width="1.5"/><circle cx="24" cy="24" r="4" fill="currentColor"/><line x1="24" y1="6" x2="24" y2="10" stroke="currentColor" stroke-width="1" opacity=".4"/><line x1="24" y1="38" x2="24" y2="42" stroke="currentColor" stroke-width="1" opacity=".4"/><line x1="6" y1="24" x2="10" y2="24" stroke="currentColor" stroke-width="1" opacity=".4"/><line x1="38" y1="24" x2="42" y2="24" stroke="currentColor" stroke-width="1" opacity=".4"/></svg>`,
+  // 9 Relative - chain
+  `<svg viewBox="0 0 48 48" fill="none"><rect x="4" y="18" width="16" height="12" rx="6" stroke="currentColor" stroke-width="1.8"/><rect x="28" y="18" width="16" height="12" rx="6" stroke="currentColor" stroke-width="1.8"/><line x1="20" y1="24" x2="28" y2="24" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>`,
+  // 10 ing - circular arrows
+  `<svg viewBox="0 0 48 48" fill="none"><path d="M24 8a16 16 0 0 1 16 16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M40 24a16 16 0 0 1-16 16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M24 40a16 16 0 0 1-16-16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M8 24A16 16 0 0 1 24 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" opacity=".4"/><path d="M38 20l2 4 4-2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  // 11 To-inf - arrow to infinity
+  `<svg viewBox="0 0 48 48" fill="none"><path d="M6 24h20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M22 18l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M30 20c2-2 4-2 5.5 0s3.5 2 5.5 0M30 28c2 2 4 2 5.5 0s3.5-2 5.5 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>`,
+  // 12 Participle - stamp checkmark
+  `<svg viewBox="0 0 48 48" fill="none"><rect x="6" y="6" width="36" height="36" rx="4" stroke="currentColor" stroke-width="1.5" stroke-dasharray="3,2"/><path d="M14 24l7 8 13-14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  // 13 Clause - nested brackets
+  `<svg viewBox="0 0 48 48" fill="none"><path d="M8 10v6c-2 1-2 5 0 6v10c-2 1-2 5 0 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none"/><path d="M40 10v6c2 1 2 5 0 6v10c2 1 2 5 0 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none"/><path d="M16 18v3c-1.5 .5-1.5 5.5 0 6v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity=".6" fill="none"/><path d="M32 18v3c1.5 .5 1.5 5.5 0 6v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity=".6" fill="none"/></svg>`,
+  // 14 Question - stylized ?
+  `<svg viewBox="0 0 48 48" fill="none"><path d="M16 18a8 8 0 0 1 14 5.5c0 3-2 4.5-5 6.5-1.5 1-2 2-2 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="23" cy="38" r="1.8" fill="currentColor"/></svg>`,
+  // 15 Tense - clock / timeline
+  `<svg viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="18" stroke="currentColor" stroke-width="1.5"/><path d="M24 12v12l8 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="24" cy="24" r="1.5" fill="currentColor"/></svg>`,
+  // 16 Conjunction - bridge circles
+  `<svg viewBox="0 0 48 48" fill="none"><circle cx="14" cy="24" r="10" stroke="currentColor" stroke-width="1.5"/><circle cx="34" cy="24" r="10" stroke="currentColor" stroke-width="1.5"/><path d="M20 18c2.5-3 8-3 8 0M20 30c2.5 3 8 3 8 0" stroke="currentColor" stroke-width="1.2" opacity=".5" fill="none"/></svg>`,
+];
+
+const unitColors = [
+  '#00E5FF','#00D4F0','#00C8D4','#00D49A',
+  '#00E57A','#80F040','#FFD700','#FFB800',
+  '#FF8C00','#FF5500','#FF0066','#FF00AA',
+  '#CC00FF','#7700FF','#2200FF','#0066FF'
+];
+
 const units = [
   {
-    title: "主語・動詞・基本文型",
-    subtitle: "否定文と疑問文を含む",
-    desc: "英語の文はすべて「主語＋動詞」が基本。文型を理解すれば、どんな文も組み立てられます。",
-    points: [
-      { label: "SV（第1文型）", text: "主語＋動詞のみ。動詞だけで意味が完結する。<br><strong>例:</strong> Birds fly. / He runs." },
-      { label: "SVC（第2文型）", text: "主語＋動詞＋補語。S＝Cの関係。<br><strong>例:</strong> She is a teacher. / He looks happy." },
-      { label: "SVO（第3文型）", text: "主語＋動詞＋目的語。動詞の対象（〜を）がある。<br><strong>例:</strong> I like coffee. / She reads books." },
-      { label: "SVOO（第4文型）", text: "主語＋動詞＋間接目的語＋直接目的語。「誰かに〜をあげる」系。<br><strong>例:</strong> He gave me a gift." },
-      { label: "SVOC（第5文型）", text: "主語＋動詞＋目的語＋補語。O＝Cの関係。<br><strong>例:</strong> She made me happy." },
-      { label: "否定文の作り方", text: "be動詞の後に <strong>not</strong>、一般動詞の前に <strong>do not / does not</strong> を置く。<br><strong>例:</strong> I do not like fish. / She is not busy." },
-      { label: "疑問文の作り方", text: "be動詞→主語の前に移動。一般動詞→文頭に <strong>Do / Does</strong> を置く。<br><strong>例:</strong> Are you a student? / Do you like music?" },
+    title:"主語・動詞・基本文型",
+    subtitle:"否定文と疑問文を含む",
+    desc:"英語の文はすべて「主語＋動詞」が基本。5つの文型を理解すれば、どんな文も組み立てられます。",
+    points:[
+      {l:"SV（第1文型）",b:"主語＋動詞のみ。動詞だけで意味が完結する。<br><strong>例:</strong> Birds fly. / He runs fast."},
+      {l:"SVC（第2文型）",b:"主語＋動詞＋補語。S＝C の関係。<br><strong>例:</strong> She is a teacher. / He looks happy."},
+      {l:"SVO（第3文型）",b:"主語＋動詞＋目的語。動詞の対象（〜を）がある。<br><strong>例:</strong> I like coffee. / She reads books."},
+      {l:"SVOO（第4文型）",b:"主語＋動詞＋間接目的語＋直接目的語。<br><strong>例:</strong> He gave me a gift."},
+      {l:"SVOC（第5文型）",b:"主語＋動詞＋目的語＋補語。O＝C の関係。<br><strong>例:</strong> She made me happy."},
+      {l:"否定文",b:"be動詞の後に <strong>not</strong>、一般動詞の前に <strong>do/does not</strong>。<br><strong>例:</strong> I don't like fish. / She isn't busy."},
+      {l:"疑問文",b:"be動詞→主語の前へ。一般動詞→文頭に <strong>Do/Does</strong>。<br><strong>例:</strong> Are you a student? / Do you like music?"},
     ],
-    examples: [
-      { en: "I drink coffee every morning.", ja: "私は毎朝コーヒーを飲みます。" },
-      { en: "She doesn't like spicy food.", ja: "彼女は辛い食べ物が好きではありません。" },
-      { en: "Do you speak English?", ja: "あなたは英語を話しますか？" },
-      { en: "He gave his friend a birthday card.", ja: "彼は友人に誕生日カードをあげました。" },
-      { en: "The movie made me cry.", ja: "その映画は私を泣かせました。" },
+    ex:[
+      {en:"I drink coffee every morning.",ja:"私は毎朝コーヒーを飲みます。"},
+      {en:"She doesn't like spicy food.",ja:"彼女は辛い食べ物が好きではありません。"},
+      {en:"Do you speak English?",ja:"あなたは英語を話しますか？"},
+      {en:"He gave his friend a birthday card.",ja:"彼は友人に誕生日カードをあげました。"},
+      {en:"The movie made me cry.",ja:"その映画は私を泣かせました。"},
     ],
-    quiz: [
-      { ja: "私は毎日英語を勉強します。", en: "I study English every day.", note: "SVO文型。study は「勉強する」" },
-      { ja: "彼は先生ではありません。", en: "He is not a teacher.", note: "be動詞の否定文。is not = isn't でもOK" },
-      { ja: "あなたはコーヒーが好きですか？", en: "Do you like coffee?", note: "一般動詞の疑問文。文頭に Do を置く" },
-      { ja: "彼女は私に本をくれました。", en: "She gave me a book.", note: "SVOO文型。gave = give の過去形" },
-      { ja: "その音楽は私を幸せにします。", en: "The music makes me happy.", note: "SVOC文型。make + O + 形容詞" },
+    quiz:[
+      {ja:"私は毎日英語を勉強します。",en:"I study English every day.",note:"SVO文型。study は一般動詞"},
+      {ja:"彼は先生ではありません。",en:"He is not a teacher.",note:"be動詞の否定: is not（isn't）"},
+      {ja:"あなたはコーヒーが好きですか？",en:"Do you like coffee?",note:"一般動詞の疑問文: Do + 主語 + 動詞"},
+      {ja:"彼女は私に本をくれました。",en:"She gave me a book.",note:"SVOO文型。gave = give の過去形"},
+      {ja:"その音楽は私を幸せにします。",en:"The music makes me happy.",note:"SVOC文型。make + O + 形容詞"},
     ]
   },
   {
-    title: "名詞",
-    subtitle: "可算・不可算名詞、冠詞、複数形",
-    desc: "名詞は「人・モノ・場所・概念」の名前。英語の名詞は「数えられるか」が重要なポイントです。",
-    points: [
-      { label: "可算名詞", text: "数えられる名詞。単数には <strong>a / an</strong>、複数には <strong>-s / -es</strong> をつける。<br><strong>例:</strong> a book → books / an apple → apples" },
-      { label: "不可算名詞", text: "数えられない名詞。水・空気・情報・愛など。<strong>a/an は使わない、複数形もない。</strong><br><strong>例:</strong> water, music, advice, money" },
-      { label: "冠詞 a / an", text: "初めて話題に出るとき、または「どれでもいい1つ」のとき。母音始まりの前は <strong>an</strong>。<br><strong>例:</strong> I saw a dog. / She is an engineer." },
-      { label: "冠詞 the", text: "「あの、その」特定のものを指すとき。前に出てきたもの、唯一のものに使う。<br><strong>例:</strong> The sun is big. / Pass me the salt." },
-      { label: "冠詞なし（無冠詞）", text: "複数の可算名詞（一般論）や不可算名詞には冠詞不要。<br><strong>例:</strong> Dogs are friendly. / I love music." },
+    title:"名詞",
+    subtitle:"可算・不可算名詞、冠詞、複数形",
+    desc:"名詞は「人・モノ・場所・概念」の名前。英語の名詞は「数えられるか」が重要なポイントです。",
+    points:[
+      {l:"可算名詞",b:"数えられる名詞。単数は <strong>a/an</strong>、複数は <strong>-s/-es</strong>。<br><strong>例:</strong> a book→books / an apple→apples"},
+      {l:"不可算名詞",b:"数えられない名詞（水・空気・情報・愛など）。<strong>a/an 不可・複数形なし</strong>。<br><strong>例:</strong> water, music, advice, money"},
+      {l:"冠詞 a / an",b:"初登場または「どれでもいい1つ」。母音始まりの前は <strong>an</strong>。<br><strong>例:</strong> I saw a dog. / She is an engineer."},
+      {l:"冠詞 the",b:"「あの・その」特定のものを指す。前出のもの・唯一のものに使う。<br><strong>例:</strong> The sun is big. / Pass me the salt."},
+      {l:"無冠詞",b:"複数の可算名詞（一般論）・不可算名詞には冠詞不要。<br><strong>例:</strong> Dogs are friendly. / I love music."},
     ],
-    examples: [
-      { en: "I need a pen.", ja: "私はペンが1本必要です。（どれでもいい1本）" },
-      { en: "Can I have some water?", ja: "水をもらえますか？（不可算名詞）" },
-      { en: "The book on the desk is mine.", ja: "机の上にある本は私のものです。（特定）" },
-      { en: "She gave me good advice.", ja: "彼女は私に良いアドバイスをくれました。（adviceは不可算）" },
-      { en: "I have two brothers and a sister.", ja: "私には兄弟が2人と姉妹が1人います。" },
+    ex:[
+      {en:"I need a pen.",ja:"私はペンが1本必要です。"},
+      {en:"Can I have some water?",ja:"水をもらえますか？（不可算）"},
+      {en:"The book on the desk is mine.",ja:"机の上の本は私のものです。（特定）"},
+      {en:"She gave me good advice.",ja:"彼女は良いアドバイスをくれました。"},
+      {en:"I have two brothers and a sister.",ja:"私には兄弟2人と姉妹1人います。"},
     ],
-    quiz: [
-      { ja: "私はりんごを1つ食べました。", en: "I ate an apple.", note: "apple は母音始まりなので an" },
-      { ja: "彼女は音楽が好きです。", en: "She likes music.", note: "music は不可算名詞。冠詞不要" },
-      { ja: "テーブルの上のコップを取ってください。", en: "Please take the glass on the table.", note: "特定のコップ → the を使う" },
-      { ja: "犬は人間の友達です。（一般論）", en: "Dogs are friends of humans.", note: "一般論の複数形 → 無冠詞" },
-      { ja: "彼はお金を持っていません。", en: "He doesn't have any money.", note: "money は不可算名詞" },
+    quiz:[
+      {ja:"私はりんごを1つ食べました。",en:"I ate an apple.",note:"apple は母音始まり → an"},
+      {ja:"彼女は音楽が好きです。",en:"She likes music.",note:"music は不可算名詞。冠詞不要"},
+      {ja:"テーブルの上のコップを取ってください。",en:"Please take the glass on the table.",note:"特定のコップ → the"},
+      {ja:"犬は人間の友達です。（一般論）",en:"Dogs are friends of humans.",note:"一般論の複数形 → 無冠詞"},
+      {ja:"彼はお金を持っていません。",en:"He doesn't have any money.",note:"money は不可算名詞"},
     ]
   },
   {
-    title: "形容詞",
-    subtitle: "名詞を修飾する・補語になる",
-    desc: "形容詞は名詞を説明する言葉。「大きい・美しい・速い」など。置く位置が2パターンあります。",
-    points: [
-      { label: "限定用法（名詞の前）", text: "形容詞＋名詞の形。名詞を直接修飾する。<br><strong>例:</strong> a beautiful flower / an old car / a cold drink" },
-      { label: "叙述用法（補語）", text: "動詞の後ろに置いてSVCを作る。主語を説明する。<br><strong>例:</strong> The flower is beautiful. / He looks tired." },
-      { label: "形容詞の語順", text: "複数の形容詞は<strong>「意見→大きさ→年齢→形→色→国籍→素材」</strong>の順。<br><strong>例:</strong> a beautiful small old Italian car" },
-      { label: "数量を表す形容詞", text: "可算名詞: <strong>many, few, a few</strong> / 不可算名詞: <strong>much, little, a little</strong> / 両方: <strong>some, any, a lot of</strong>" },
-      { label: "感情を表す形容詞", text: "人→ <strong>-ed形</strong>（excited, tired, interested）/ 物・状況→ <strong>-ing形</strong>（exciting, tiring, interesting）" },
+    title:"形容詞",
+    subtitle:"名詞を修飾する・補語になる",
+    desc:"形容詞は名詞を説明する言葉。「大きい・美しい・速い」など。置く位置が2パターンあります。",
+    points:[
+      {l:"限定用法（名詞の前）",b:"形容詞＋名詞の形。<br><strong>例:</strong> a beautiful flower / an old car / a cold drink"},
+      {l:"叙述用法（補語）",b:"動詞の後ろに置いてSVCを作る。主語を説明。<br><strong>例:</strong> The flower is beautiful. / He looks tired."},
+      {l:"形容詞の語順",b:"複数の形容詞は <strong>意見→大きさ→年齢→形→色→国籍→素材</strong> の順。<br><strong>例:</strong> a beautiful small old Italian car"},
+      {l:"数量を表す形容詞",b:"可算: <strong>many, few, a few</strong> / 不可算: <strong>much, little, a little</strong> / 両方: <strong>some, any, a lot of</strong>"},
+      {l:"感情の形容詞",b:"人→<strong>-ed形</strong>（excited, tired）/ 物・状況→<strong>-ing形</strong>（exciting, tiring）"},
     ],
-    examples: [
-      { en: "She has long, curly hair.", ja: "彼女は長くてカーリーな髪をしています。" },
-      { en: "The soup is very hot.", ja: "スープはとても熱いです。（叙述用法）" },
-      { en: "There are many people in the park.", ja: "公園にはたくさんの人がいます。" },
-      { en: "I'm bored. This movie is boring.", ja: "私は退屈しています。この映画は退屈です。" },
-      { en: "He seems happy today.", ja: "彼は今日幸せそうです。" },
+    ex:[
+      {en:"She has long, curly hair.",ja:"彼女は長くてカーリーな髪をしています。"},
+      {en:"The soup is very hot.",ja:"スープはとても熱いです。（叙述）"},
+      {en:"There are many people in the park.",ja:"公園にたくさんの人がいます。"},
+      {en:"I'm bored. This movie is boring.",ja:"私は退屈。この映画は退屈です。"},
+      {en:"He seems happy today.",ja:"彼は今日幸せそうです。"},
     ],
-    quiz: [
-      { ja: "彼女は背が高い女性です。", en: "She is a tall woman.", note: "限定用法: tall + 名詞" },
-      { ja: "その映画はとても面白かったです。", en: "The movie was very interesting.", note: "映画（物）なので interesting" },
-      { ja: "私はその結果に驚きました。", en: "I was surprised at the result.", note: "人が感じる → surprised (-ed形)" },
-      { ja: "冷蔵庫に牛乳が少しあります。", en: "There is a little milk in the fridge.", note: "milk は不可算名詞 → a little" },
-      { ja: "私は今日とても疲れています。", en: "I am very tired today.", note: "叙述用法: be動詞 + tired" },
+    quiz:[
+      {ja:"彼女は背が高い女性です。",en:"She is a tall woman.",note:"限定用法: tall + 名詞"},
+      {ja:"その映画はとても面白かったです。",en:"The movie was very interesting.",note:"映画（物）→ interesting（-ing形）"},
+      {ja:"私はその結果に驚きました。",en:"I was surprised at the result.",note:"人が感じる → surprised（-ed形）"},
+      {ja:"冷蔵庫に牛乳が少しあります。",en:"There is a little milk in the fridge.",note:"milk は不可算 → a little"},
+      {ja:"私は今日とても疲れています。",en:"I am very tired today.",note:"叙述用法: be動詞 + tired"},
     ]
   },
   {
-    title: "副詞",
-    subtitle: "動詞・形容詞・文全体を修飾する",
-    desc: "副詞は「いつ・どこで・どのように・どのくらい」を表す言葉。名詞以外を修飾します。",
-    points: [
-      { label: "様態の副詞（〜に、〜く）", text: "動詞を修飾。形容詞 + <strong>-ly</strong> が多い。<br><strong>例:</strong> slowly, quickly, carefully, well, hard" },
-      { label: "頻度の副詞", text: "どのくらいの頻度かを表す。be動詞の後、一般動詞の前に置く。<br><strong>always ＞ usually ＞ often ＞ sometimes ＞ rarely ＞ never</strong>" },
-      { label: "程度の副詞", text: "形容詞・副詞を修飾。<strong>very, so, quite, pretty, too, enough, really</strong><br><strong>例:</strong> very fast / too hot / quite good" },
-      { label: "時・場所の副詞", text: "文末または文頭に置くことが多い。<br><strong>例:</strong> yesterday, now, soon, here, there, abroad" },
-      { label: "注意: hard と hardly", text: "<strong>hard</strong>（一生懸命に）vs <strong>hardly</strong>（ほとんど〜ない）<br><strong>late</strong>（遅く）vs <strong>lately</strong>（最近）" },
+    title:"副詞",
+    subtitle:"動詞・形容詞・文全体を修飾する",
+    desc:"副詞は「いつ・どこで・どのように・どのくらい」を表す言葉。名詞以外を修飾します。",
+    points:[
+      {l:"様態の副詞（〜く・〜に）",b:"動詞を修飾。形容詞＋<strong>-ly</strong> が多い。<br><strong>例:</strong> slowly, quickly, carefully, well, hard"},
+      {l:"頻度の副詞",b:"be動詞の後・一般動詞の前に置く。<br><strong>always＞usually＞often＞sometimes＞rarely＞never</strong>"},
+      {l:"程度の副詞",b:"形容詞・副詞を修飾。<br><strong>very, so, quite, pretty, too, enough, really</strong>"},
+      {l:"時・場所の副詞",b:"文末または文頭が多い。<br><strong>例:</strong> yesterday, now, soon, here, there, abroad"},
+      {l:"注意: hard/hardly・late/lately",b:"<strong>hard</strong>（一生懸命） vs <strong>hardly</strong>（ほとんど〜ない）<br><strong>late</strong>（遅く） vs <strong>lately</strong>（最近）"},
     ],
-    examples: [
-      { en: "Please speak slowly.", ja: "ゆっくり話してください。（様態）" },
-      { en: "She always drinks green tea.", ja: "彼女はいつも緑茶を飲みます。（頻度）" },
-      { en: "This bag is too heavy.", ja: "このバッグは重すぎます。（程度）" },
-      { en: "He studies hard every day.", ja: "彼は毎日一生懸命勉強します。" },
-      { en: "I sometimes go jogging in the morning.", ja: "私は朝、時々ジョギングします。" },
+    ex:[
+      {en:"Please speak slowly.",ja:"ゆっくり話してください。"},
+      {en:"She always drinks green tea.",ja:"彼女はいつも緑茶を飲みます。"},
+      {en:"This bag is too heavy.",ja:"このバッグは重すぎます。"},
+      {en:"He studies hard every day.",ja:"彼は毎日一生懸命勉強します。"},
+      {en:"I sometimes go jogging in the morning.",ja:"私は朝、時々ジョギングします。"},
     ],
-    quiz: [
-      { ja: "彼女はとても上手にピアノを弾きます。", en: "She plays the piano very well.", note: "well は good の副詞形" },
-      { ja: "私はめったにテレビを見ません。", en: "I rarely watch TV.", note: "頻度副詞 rarely は動詞の前" },
-      { ja: "この問題は非常に難しいです。", en: "This problem is very difficult.", note: "程度副詞 very が形容詞を修飾" },
-      { ja: "彼は昨日遅く起きました。", en: "He woke up late yesterday.", note: "late = 遅く（副詞）" },
-      { ja: "彼女は最近あまり外出しません。", en: "She hardly goes out lately.", note: "hardly = ほとんど〜ない" },
+    quiz:[
+      {ja:"彼女はとても上手にピアノを弾きます。",en:"She plays the piano very well.",note:"well は good の副詞形"},
+      {ja:"私はめったにテレビを見ません。",en:"I rarely watch TV.",note:"頻度副詞 rarely は動詞の前"},
+      {ja:"この問題は非常に難しいです。",en:"This problem is very difficult.",note:"程度副詞 very が形容詞を修飾"},
+      {ja:"彼は昨日遅く起きました。",en:"He woke up late yesterday.",note:"late = 遅く（副詞）"},
+      {ja:"彼女は最近あまり外出しません。",en:"She hardly goes out lately.",note:"hardly = ほとんど〜ない"},
     ]
   },
   {
-    title: "比較",
-    subtitle: "比較級・最上級・同等比較",
-    desc: "2つを比べるとき、3つ以上の中で一番を言うとき。英語の比較表現は3パターンです。",
-    points: [
-      { label: "原級（as 〜 as）", text: "「〜と同じくらい」。<br><strong>例:</strong> She is as tall as her mother. / I run as fast as him." },
-      { label: "比較級（-er / more）", text: "「〜より」。短い形容詞は <strong>-er</strong>、長い形容詞は <strong>more</strong>。<br><strong>例:</strong> taller, bigger, more beautiful, more expensive" },
-      { label: "最上級（-est / most）", text: "「最も〜」。the をつける。<br><strong>例:</strong> the tallest, the biggest, the most beautiful" },
-      { label: "不規則変化", text: "good → better → best / bad → worse → worst / many/much → more → most / little → less → least" },
-      { label: "比較の重要表現", text: "<strong>much/far + 比較級</strong>（はるかに〜）/ <strong>the + 比較級, the + 比較級</strong>（〜すればするほど）" },
+    title:"比較",
+    subtitle:"比較級・最上級・同等比較",
+    desc:"2つを比べるとき、3つ以上の中で一番を言うとき。英語の比較表現は3パターンです。",
+    points:[
+      {l:"原級（as 〜 as）",b:"「〜と同じくらい」。<br><strong>例:</strong> She is as tall as her mother. / I run as fast as him."},
+      {l:"比較級（-er / more）",b:"「〜より」。短い形容詞は<strong>-er</strong>、長い形容詞は<strong>more</strong>。<br><strong>例:</strong> taller, bigger, more beautiful"},
+      {l:"最上級（-est / most）",b:"「最も〜」。<strong>the</strong> をつける。<br><strong>例:</strong> the tallest, the most beautiful"},
+      {l:"不規則変化",b:"good→better→best / bad→worse→worst / many→more→most / little→less→least"},
+      {l:"重要表現",b:"<strong>much/far＋比較級</strong>（はるかに〜）<br><strong>the＋比較級, the＋比較級</strong>（〜すればするほど）"},
     ],
-    examples: [
-      { en: "Tokyo is bigger than Osaka.", ja: "東京は大阪より大きいです。" },
-      { en: "She is the most talented student in the class.", ja: "彼女はクラスで最も才能ある生徒です。" },
-      { en: "This book is as interesting as that one.", ja: "この本はあの本と同じくらい面白いです。" },
-      { en: "He is much taller than his brother.", ja: "彼は兄よりずっと背が高いです。" },
-      { en: "The more you practice, the better you get.", ja: "練習すればするほど上手になります。" },
+    ex:[
+      {en:"Tokyo is bigger than Osaka.",ja:"東京は大阪より大きいです。"},
+      {en:"She is the most talented student in the class.",ja:"彼女はクラスで最も才能ある生徒です。"},
+      {en:"This book is as interesting as that one.",ja:"この本はあの本と同じくらい面白い。"},
+      {en:"He is much taller than his brother.",ja:"彼は兄よりずっと背が高いです。"},
+      {en:"The more you practice, the better you get.",ja:"練習すればするほど上手になります。"},
     ],
-    quiz: [
-      { ja: "このレストランはあのレストランより高いです。", en: "This restaurant is more expensive than that one.", note: "expensive は長い形容詞 → more" },
-      { ja: "彼女は私と同じくらい速く走ります。", en: "She runs as fast as I do.", note: "同等比較: as + 副詞 + as" },
-      { ja: "富士山は日本で最も高い山です。", en: "Mt. Fuji is the highest mountain in Japan.", note: "最上級 + in + 場所" },
-      { ja: "今日は昨日よりずっと寒いです。", en: "Today is much colder than yesterday.", note: "much + 比較級で強調" },
-      { ja: "彼は私より英語が上手です。", en: "He speaks English better than I do.", note: "well の比較級は better" },
+    quiz:[
+      {ja:"このレストランはあのレストランより高いです。",en:"This restaurant is more expensive than that one.",note:"expensive は長い形容詞 → more"},
+      {ja:"彼女は私と同じくらい速く走ります。",en:"She runs as fast as I do.",note:"同等比較: as＋副詞＋as"},
+      {ja:"富士山は日本で最も高い山です。",en:"Mt. Fuji is the highest mountain in Japan.",note:"最上級＋in＋場所"},
+      {ja:"今日は昨日よりずっと寒いです。",en:"Today is much colder than yesterday.",note:"much＋比較級で強調"},
+      {ja:"彼は私より英語が上手です。",en:"He speaks English better than I do.",note:"well の比較級は better"},
     ]
   },
   {
-    title: "否定",
-    subtitle: "not / no / never / nothing など",
-    desc: "英語の否定は「助動詞・be動詞にnotをつける」が基本。強い否定や部分否定もあります。",
-    points: [
-      { label: "基本否定 (not)", text: "be動詞・助動詞の後ろに <strong>not</strong> を置く。一般動詞は <strong>do/does/did not</strong>。<br><strong>例:</strong> I don't know. / She isn't here." },
-      { label: "never（決して〜ない）", text: "頻度副詞として動詞の前に置く。not より強い否定。<br><strong>例:</strong> I never eat meat. / He never lies." },
-      { label: "no + 名詞", text: "「〜がない、一つも〜ない」。<br><strong>例:</strong> I have no money. / There is no time." },
-      { label: "nobody / nothing / nowhere", text: "「誰も〜ない / 何も〜ない / どこにも〜ない」。単数扱い。<br><strong>例:</strong> Nobody knows. / Nothing happened." },
-      { label: "部分否定", text: "not always（いつもではない）/ not all（すべてではない）/ not necessarily（必ずしも〜ない）" },
+    title:"否定",
+    subtitle:"not / no / never / nothing など",
+    desc:"英語の否定は「助動詞・be動詞にnotをつける」が基本。強い否定や部分否定もあります。",
+    points:[
+      {l:"基本否定（not）",b:"be動詞・助動詞の後ろに not。一般動詞は do/does/did not。<br><strong>例:</strong> I don't know. / She isn't here."},
+      {l:"never（決して〜ない）",b:"頻度副詞として動詞の前。not より強い否定。<br><strong>例:</strong> I never eat meat. / He never lies."},
+      {l:"no ＋ 名詞",b:"「〜がない・一つも〜ない」。<br><strong>例:</strong> I have no money. / There is no time."},
+      {l:"nobody / nothing / nowhere",b:"「誰も〜ない / 何も〜ない / どこにも〜ない」。単数扱い。<br><strong>例:</strong> Nobody knows. / Nothing happened."},
+      {l:"部分否定",b:"not always（いつもではない）/ not all（すべてではない）/ not necessarily（必ずしも〜ない）"},
     ],
-    examples: [
-      { en: "I don't have any plans tonight.", ja: "今夜は何も予定がありません。" },
-      { en: "She never forgets her friends' birthdays.", ja: "彼女は友達の誕生日を決して忘れません。" },
-      { en: "There is no sugar in my coffee.", ja: "私のコーヒーには砂糖が入っていません。" },
-      { en: "Nobody was at home.", ja: "誰も家にいませんでした。" },
-      { en: "Not all students passed the exam.", ja: "すべての生徒が試験に合格したわけではありません。" },
+    ex:[
+      {en:"I don't have any plans tonight.",ja:"今夜は何も予定がありません。"},
+      {en:"She never forgets her friends' birthdays.",ja:"彼女は友達の誕生日を決して忘れません。"},
+      {en:"There is no sugar in my coffee.",ja:"コーヒーに砂糖が入っていません。"},
+      {en:"Nobody was at home.",ja:"誰も家にいませんでした。"},
+      {en:"Not all students passed the exam.",ja:"すべての生徒が合格したわけではありません。"},
     ],
-    quiz: [
-      { ja: "私はその映画を見ていません。", en: "I haven't seen that movie.", note: "現在完了の否定: haven't + 過去分詞" },
-      { ja: "彼女は決して遅刻しません。", en: "She is never late.", note: "never は be動詞の後ろに" },
-      { ja: "冷蔵庫に食べ物が何もない。", en: "There is no food in the fridge.", note: "no + 名詞の形" },
-      { ja: "誰もその答えを知りませんでした。", en: "Nobody knew the answer.", note: "nobody は単数扱い" },
-      { ja: "彼が言ったことは必ずしも正しいわけではありません。", en: "What he said is not necessarily true.", note: "部分否定: not necessarily" },
+    quiz:[
+      {ja:"私はその映画を見ていません。",en:"I haven't seen that movie.",note:"現在完了の否定: haven't＋過去分詞"},
+      {ja:"彼女は決して遅刻しません。",en:"She is never late.",note:"never は be動詞の後ろ"},
+      {ja:"冷蔵庫に食べ物が何もない。",en:"There is no food in the fridge.",note:"no＋名詞の形"},
+      {ja:"誰もその答えを知りませんでした。",en:"Nobody knew the answer.",note:"nobody は単数扱い"},
+      {ja:"彼が言ったことは必ずしも正しいわけではありません。",en:"What he said is not necessarily true.",note:"部分否定: not necessarily"},
     ]
   },
   {
-    title: "助動詞",
-    subtitle: "can / will / may / must / should など",
-    desc: "助動詞は動詞に「能力・許可・義務・推量」などの意味を加えます。助動詞の後は必ず動詞の原形。",
-    points: [
-      { label: "can（できる／してもよい）", text: "<strong>能力:</strong> I can swim. / <strong>許可:</strong> Can I sit here? / <strong>can't:</strong> 不可能・禁止" },
-      { label: "will（〜するだろう／〜します）", text: "<strong>未来:</strong> It will rain tomorrow. / <strong>意志:</strong> I will help you. / <strong>won't:</strong> 〜しないだろう" },
-      { label: "may / might（かもしれない／してもよい）", text: "<strong>推量:</strong> She may be busy. / <strong>許可:</strong> May I use this? / might は may より可能性が低い" },
-      { label: "must（しなければならない／〜に違いない）", text: "<strong>義務:</strong> You must study. / <strong>強い推量:</strong> He must be tired. / <strong>must not:</strong> 禁止" },
-      { label: "should（すべきだ／〜のはずだ）", text: "<strong>アドバイス・義務:</strong> You should rest. / <strong>推量:</strong> She should be home by now." },
-      { label: "could / would", text: "<strong>could:</strong> can の過去形・丁寧な依頼。 / <strong>would:</strong> will の過去形・丁寧な依頼・習慣" },
+    title:"助動詞",
+    subtitle:"can / will / may / must / should など",
+    desc:"助動詞は動詞に「能力・許可・義務・推量」などの意味を加えます。後は必ず動詞の原形。",
+    points:[
+      {l:"can（できる・してもよい）",b:"<strong>能力:</strong> I can swim. / <strong>許可:</strong> Can I sit here? / <strong>can't:</strong> 不可能・禁止"},
+      {l:"will（〜するだろう・します）",b:"<strong>未来:</strong> It will rain. / <strong>意志:</strong> I will help you. / <strong>won't:</strong> 〜しないだろう"},
+      {l:"may / might（かもしれない）",b:"<strong>推量:</strong> She may be busy. / <strong>許可:</strong> May I use this? / might は可能性が低い"},
+      {l:"must（しなければ・〜に違いない）",b:"<strong>義務:</strong> You must study. / <strong>強い推量:</strong> He must be tired. / <strong>must not:</strong> 禁止"},
+      {l:"should（すべきだ）",b:"<strong>アドバイス:</strong> You should rest. / <strong>推量:</strong> She should be home by now."},
+      {l:"could / would",b:"<strong>could:</strong> can の過去形・丁寧な依頼 / <strong>would:</strong> will の過去形・丁寧な依頼"},
     ],
-    examples: [
-      { en: "Can you speak Japanese?", ja: "日本語を話せますか？" },
-      { en: "You should see a doctor.", ja: "医者に診てもらうべきです。" },
-      { en: "It might snow tonight.", ja: "今夜は雪が降るかもしれません。" },
-      { en: "You must not park here.", ja: "ここに駐車してはいけません。" },
-      { en: "Could you help me with this?", ja: "これを手伝っていただけますか？（丁寧）" },
+    ex:[
+      {en:"Can you speak Japanese?",ja:"日本語を話せますか？"},
+      {en:"You should see a doctor.",ja:"医者に診てもらうべきです。"},
+      {en:"It might snow tonight.",ja:"今夜は雪が降るかもしれません。"},
+      {en:"You must not park here.",ja:"ここに駐車してはいけません。"},
+      {en:"Could you help me with this?",ja:"これを手伝っていただけますか？（丁寧）"},
     ],
-    quiz: [
-      { ja: "彼女はギターが弾けます。", en: "She can play the guitar.", note: "能力を表す can" },
-      { ja: "明日は晴れるでしょう。", en: "It will be sunny tomorrow.", note: "未来の予測 will" },
-      { ja: "あなたは早く寝るべきです。", en: "You should go to bed early.", note: "アドバイスの should" },
-      { ja: "ここでタバコを吸ってはいけません。", en: "You must not smoke here.", note: "禁止の must not" },
-      { ja: "窓を開けていただけますか？", en: "Could you open the window?", note: "丁寧な依頼 Could you〜?" },
+    quiz:[
+      {ja:"彼女はギターが弾けます。",en:"She can play the guitar.",note:"能力を表す can"},
+      {ja:"明日は晴れるでしょう。",en:"It will be sunny tomorrow.",note:"未来の予測 will"},
+      {ja:"あなたは早く寝るべきです。",en:"You should go to bed early.",note:"アドバイスの should"},
+      {ja:"ここでタバコを吸ってはいけません。",en:"You must not smoke here.",note:"禁止の must not"},
+      {ja:"窓を開けていただけますか？",en:"Could you open the window?",note:"丁寧な依頼 Could you〜?"},
     ]
   },
   {
-    title: "前置詞",
-    subtitle: "時間・場所・方向・関係を表す",
-    desc: "前置詞は名詞や代名詞の前に置いて、時・場所・方向などの関係を表します。",
-    points: [
-      { label: "場所の前置詞", text: "<strong>in</strong>（〜の中に）/ <strong>on</strong>（〜の上に・接触）/ <strong>at</strong>（〜の地点に）<br><strong>例:</strong> in the room / on the table / at the station" },
-      { label: "時間の前置詞", text: "<strong>in</strong>（年・月・季節）/ <strong>on</strong>（曜日・日付）/ <strong>at</strong>（時刻・特定の時）<br><strong>例:</strong> in 2020 / on Monday / at 9 o'clock" },
-      { label: "方向の前置詞", text: "<strong>to</strong>（〜へ）/ <strong>into</strong>（〜の中へ）/ <strong>from</strong>（〜から）/ <strong>toward</strong>（〜の方向に）" },
-      { label: "その他の重要前置詞", text: "<strong>by</strong>（〜までに・〜によって）/ <strong>for</strong>（〜のために・〜の間）/ <strong>with</strong>（〜と一緒に）/ <strong>about</strong>（〜について）/ <strong>without</strong>（〜なしで）" },
-      { label: "前置詞の慣用表現", text: "at work / on vacation / in trouble / by car / for example / in the end / on time / at first" },
+    title:"前置詞",
+    subtitle:"時間・場所・方向・関係を表す",
+    desc:"前置詞は名詞や代名詞の前に置いて、時・場所・方向などの関係を表します。",
+    points:[
+      {l:"場所の前置詞",b:"<strong>in</strong>（〜の中に）/ <strong>on</strong>（〜の上・接触）/ <strong>at</strong>（〜の地点）<br><strong>例:</strong> in the room / on the table / at the station"},
+      {l:"時間の前置詞",b:"<strong>in</strong>（年・月・季節）/ <strong>on</strong>（曜日・日付）/ <strong>at</strong>（時刻）<br><strong>例:</strong> in 2020 / on Monday / at 9 o'clock"},
+      {l:"方向の前置詞",b:"<strong>to</strong>（〜へ）/ <strong>into</strong>（〜の中へ）/ <strong>from</strong>（〜から）/ <strong>toward</strong>（〜の方向に）"},
+      {l:"その他の重要前置詞",b:"<strong>by</strong>（〜までに・〜によって）/ <strong>for</strong>（〜のために）/ <strong>with</strong>（〜と一緒に）/ <strong>about</strong>（〜について）"},
+      {l:"前置詞の慣用表現",b:"at work / on vacation / in trouble / by car / for example / on time / at first"},
     ],
-    examples: [
-      { en: "The meeting starts at 10 o'clock.", ja: "会議は10時に始まります。" },
-      { en: "She was born in Tokyo in 1990.", ja: "彼女は1990年に東京で生まれました。" },
-      { en: "I'll finish this by Friday.", ja: "金曜日までにこれを終わらせます。" },
-      { en: "We talked about the future.", ja: "私たちは将来について話しました。" },
-      { en: "He came to Japan from Canada.", ja: "彼はカナダから日本に来ました。" },
+    ex:[
+      {en:"The meeting starts at 10 o'clock.",ja:"会議は10時に始まります。"},
+      {en:"She was born in Tokyo in 1990.",ja:"彼女は1990年に東京で生まれました。"},
+      {en:"I'll finish this by Friday.",ja:"金曜日までにこれを終わらせます。"},
+      {en:"We talked about the future.",ja:"私たちは将来について話しました。"},
+      {en:"He came to Japan from Canada.",ja:"彼はカナダから日本に来ました。"},
     ],
-    quiz: [
-      { ja: "本は棚の上にあります。", en: "The book is on the shelf.", note: "接触している「上」は on" },
-      { ja: "私は月曜日に英語のクラスがあります。", en: "I have an English class on Monday.", note: "曜日には on" },
-      { ja: "彼女は友達と一緒にランチを食べました。", en: "She had lunch with her friend.", note: "〜と一緒に = with" },
-      { ja: "バス停で彼に会いました。", en: "I met him at the bus stop.", note: "地点・特定の場所 = at" },
-      { ja: "このレポートを明日までに提出してください。", en: "Please submit this report by tomorrow.", note: "期限 = by" },
+    quiz:[
+      {ja:"本は棚の上にあります。",en:"The book is on the shelf.",note:"接触している「上」は on"},
+      {ja:"私は月曜日に英語のクラスがあります。",en:"I have an English class on Monday.",note:"曜日には on"},
+      {ja:"彼女は友達と一緒にランチを食べました。",en:"She had lunch with her friend.",note:"〜と一緒に = with"},
+      {ja:"バス停で彼に会いました。",en:"I met him at the bus stop.",note:"地点・特定の場所 = at"},
+      {ja:"このレポートを明日までに提出してください。",en:"Please submit this report by tomorrow.",note:"期限 = by"},
     ]
   },
   {
-    title: "WH修飾（関係詞）",
-    subtitle: "who / which / that / where / when",
-    desc: "関係詞は2つの文をつなげて、名詞を詳しく説明する節を作ります。「〜な（人・物・場所）」という表現です。",
-    points: [
-      { label: "who（人を修飾）", text: "先行詞が「人」のとき。<br><strong>例:</strong> I know the man <strong>who</strong> lives next door. （隣に住んでいる男性）" },
-      { label: "which（物・動物を修飾）", text: "先行詞が「物・動物」のとき。<br><strong>例:</strong> This is the book <strong>which</strong> I bought yesterday. （昨日買った本）" },
-      { label: "that（人・物両方）", text: "who / which の代わりに使える汎用関係詞。<br><strong>例:</strong> The car <strong>that</strong> he drives is red." },
-      { label: "where（場所を修飾）", text: "先行詞が「場所」のとき。<br><strong>例:</strong> This is the restaurant <strong>where</strong> we first met." },
-      { label: "目的格の関係代名詞は省略可能", text: "修飾節の中で関係詞が目的語の役割のとき省略できる。<br><strong>例:</strong> The book (that) I read was interesting." },
+    title:"WH修飾（関係詞）",
+    subtitle:"who / which / that / where / when",
+    desc:"関係詞は2つの文をつなげて、名詞を詳しく説明する節を作ります。「〜な人・物・場所」という表現です。",
+    points:[
+      {l:"who（人を修飾）",b:"先行詞が「人」のとき。<br><strong>例:</strong> I know the man <strong>who</strong> lives next door."},
+      {l:"which（物・動物を修飾）",b:"先行詞が「物・動物」のとき。<br><strong>例:</strong> This is the book <strong>which</strong> I bought yesterday."},
+      {l:"that（人・物両方）",b:"who / which の代わりに使える汎用関係詞。<br><strong>例:</strong> The car <strong>that</strong> he drives is red."},
+      {l:"where（場所を修飾）",b:"先行詞が「場所」のとき。<br><strong>例:</strong> This is the restaurant <strong>where</strong> we first met."},
+      {l:"目的格の省略",b:"修飾節の中で関係詞が目的語のとき省略できる。<br><strong>例:</strong> The book (that) I read was interesting."},
     ],
-    examples: [
-      { en: "She is the person who helped me.", ja: "彼女が私を助けてくれた人です。" },
-      { en: "This is the phone that I want to buy.", ja: "これが私が買いたい電話です。" },
-      { en: "The city where I grew up is beautiful.", ja: "私が育った街は美しいです。" },
-      { en: "He has a dog whose name is Max.", ja: "彼はマックスという名前の犬を飼っています。" },
-      { en: "The movie (that) I watched last night was amazing.", ja: "昨夜見た映画は素晴らしかったです。" },
+    ex:[
+      {en:"She is the person who helped me.",ja:"彼女が私を助けてくれた人です。"},
+      {en:"This is the phone that I want to buy.",ja:"これが私が買いたい電話です。"},
+      {en:"The city where I grew up is beautiful.",ja:"私が育った街は美しいです。"},
+      {en:"He has a dog whose name is Max.",ja:"彼はマックスという名前の犬を飼っています。"},
+      {en:"The movie (that) I watched last night was amazing.",ja:"昨夜見た映画は素晴らしかったです。"},
     ],
-    quiz: [
-      { ja: "これが私が探していた本です。", en: "This is the book that I was looking for.", note: "物を修飾 → that / which" },
-      { ja: "私には東京に住んでいる友達がいます。", en: "I have a friend who lives in Tokyo.", note: "人を修飾 → who" },
-      { ja: "彼女が働いているカフェは新しいです。", en: "The cafe where she works is new.", note: "場所を修飾 → where" },
-      { ja: "私が尊敬する先生は厳しいです。", en: "The teacher (that) I respect is strict.", note: "目的格 → that は省略可能" },
-      { ja: "私が昨日会った男性はとても親切でした。", en: "The man (who/that) I met yesterday was very kind.", note: "目的格なので省略可能" },
+    quiz:[
+      {ja:"これが私が探していた本です。",en:"This is the book that I was looking for.",note:"物を修飾 → that / which"},
+      {ja:"私には東京に住んでいる友達がいます。",en:"I have a friend who lives in Tokyo.",note:"人を修飾 → who"},
+      {ja:"彼女が働いているカフェは新しいです。",en:"The cafe where she works is new.",note:"場所を修飾 → where"},
+      {ja:"私が尊敬する先生は厳しいです。",en:"The teacher (that) I respect is strict.",note:"目的格 → that は省略可能"},
+      {ja:"私が昨日会った男性はとても親切でした。",en:"The man (who) I met yesterday was very kind.",note:"目的格なので省略可能"},
     ]
   },
   {
-    title: "動詞ing系",
-    subtitle: "動名詞・現在分詞",
-    desc: "動詞にingをつけると「〜すること」（動名詞）や「〜している」（現在分詞）として使えます。",
-    points: [
-      { label: "動名詞（Gerund）：主語として", text: "「〜することは」という意味。単数扱い。<br><strong>例:</strong> <strong>Swimming</strong> is fun. / <strong>Learning English</strong> takes time." },
-      { label: "動名詞：目的語として", text: "動詞によっては目的語にingを取る。enjoy, finish, mind, avoid, keep など。<br><strong>例:</strong> I enjoy <strong>reading</strong>. / She avoided <strong>answering</strong>." },
-      { label: "現在分詞：進行形", text: "be動詞 + ing = 〜している（進行形）。<br><strong>例:</strong> He is <strong>running</strong>. / They were <strong>talking</strong>." },
-      { label: "現在分詞：名詞修飾", text: "名詞の前後に置いて「〜している〜」という意味。<br><strong>例:</strong> a <strong>sleeping</strong> baby / the man <strong>standing</strong> over there" },
-      { label: "動名詞 vs to不定詞", text: "<strong>動名詞のみ:</strong> enjoy, finish, avoid / <strong>to不定詞のみ:</strong> want, hope, decide / <strong>両方:</strong> like, love, start（意味が変わる場合も）" },
+    title:"動詞ing系",
+    subtitle:"動名詞・現在分詞",
+    desc:"動詞にingをつけると「〜すること」（動名詞）や「〜している」（現在分詞）として使えます。",
+    points:[
+      {l:"動名詞：主語として",b:"「〜することは」という意味。単数扱い。<br><strong>例:</strong> <strong>Swimming</strong> is fun. / <strong>Learning English</strong> takes time."},
+      {l:"動名詞：目的語として",b:"enjoy, finish, mind, avoid, keep などの動詞の後ろ。<br><strong>例:</strong> I enjoy <strong>reading</strong>. / She avoided <strong>answering</strong>."},
+      {l:"現在分詞：進行形",b:"be動詞＋ing ＝ 〜している。<br><strong>例:</strong> He is <strong>running</strong>. / They were <strong>talking</strong>."},
+      {l:"現在分詞：名詞修飾",b:"名詞の前後に置いて「〜している〜」。<br><strong>例:</strong> a <strong>sleeping</strong> baby / the man <strong>standing</strong> over there"},
+      {l:"動名詞 vs to不定詞",b:"<strong>動名詞のみ:</strong> enjoy, finish, avoid / <strong>to不定詞のみ:</strong> want, hope, decide / <strong>両方:</strong> like, love, start"},
     ],
-    examples: [
-      { en: "I enjoy cooking Japanese food.", ja: "私は日本料理を作ることを楽しんでいます。" },
-      { en: "She is talking on the phone.", ja: "彼女は電話で話しています。（進行形）" },
-      { en: "The crying baby woke everyone up.", ja: "泣いている赤ちゃんが全員を起こしました。" },
-      { en: "He kept asking the same question.", ja: "彼は同じ質問を聞き続けました。" },
-      { en: "Swimming every day is good for health.", ja: "毎日泳ぐことは健康に良いです。" },
+    ex:[
+      {en:"I enjoy cooking Japanese food.",ja:"私は日本料理を作ることを楽しんでいます。"},
+      {en:"She is talking on the phone.",ja:"彼女は電話で話しています。（進行形）"},
+      {en:"The crying baby woke everyone up.",ja:"泣いている赤ちゃんが全員を起こしました。"},
+      {en:"He kept asking the same question.",ja:"彼は同じ質問を聞き続けました。"},
+      {en:"Swimming every day is good for health.",ja:"毎日泳ぐことは健康に良いです。"},
     ],
-    quiz: [
-      { ja: "私は音楽を聴くことが好きです。", en: "I enjoy listening to music.", note: "enjoy + 動名詞（ingのみ）" },
-      { ja: "彼女は今レポートを書いています。", en: "She is writing a report now.", note: "現在進行形: is + ing" },
-      { ja: "宿題を終わらせましたか？", en: "Have you finished doing your homework?", note: "finish + 動名詞" },
-      { ja: "向こうに立っている人は誰ですか？", en: "Who is the person standing over there?", note: "現在分詞で名詞修飾" },
-      { ja: "毎日運動することは大切です。", en: "Exercising every day is important.", note: "動名詞が主語" },
+    quiz:[
+      {ja:"私は音楽を聴くことが好きです。",en:"I enjoy listening to music.",note:"enjoy＋動名詞（ingのみ）"},
+      {ja:"彼女は今レポートを書いています。",en:"She is writing a report now.",note:"現在進行形: is＋ing"},
+      {ja:"宿題を終わらせましたか？",en:"Have you finished doing your homework?",note:"finish＋動名詞"},
+      {ja:"向こうに立っている人は誰ですか？",en:"Who is the person standing over there?",note:"現在分詞で名詞修飾"},
+      {ja:"毎日運動することは大切です。",en:"Exercising every day is important.",note:"動名詞が主語"},
     ]
   },
   {
-    title: "To不定詞",
-    subtitle: "名詞的・形容詞的・副詞的用法",
-    desc: "to + 動詞の原形。3つの使い方があり、文中での役割が違います。",
-    points: [
-      { label: "名詞的用法（〜すること）", text: "主語・目的語・補語になる。<br><strong>例:</strong> <strong>To travel</strong> is fun. / I want <strong>to study</strong>. / My dream is <strong>to be</strong> a doctor." },
-      { label: "形容詞的用法（〜するための）", text: "名詞の後ろに置いて名詞を修飾。<br><strong>例:</strong> I need something <strong>to eat</strong>. / She has no time <strong>to rest</strong>." },
-      { label: "副詞的用法（〜するために／〜して）", text: "目的・感情の原因・結果を表す。<br><strong>例:</strong> I went to the store <strong>to buy</strong> milk. / I'm glad <strong>to hear</strong> that." },
-      { label: "to不定詞を取る動詞", text: "want, hope, wish, decide, plan, promise, need, try, agree, refuse など" },
-      { label: "It is ... to 〜 構文", text: "「〜することは...だ」という意味の重要構文。<br><strong>例:</strong> It is important to exercise. / It is easy to make mistakes." },
+    title:"To不定詞",
+    subtitle:"名詞的・形容詞的・副詞的用法",
+    desc:"to＋動詞の原形。3つの使い方があり、文中での役割が違います。",
+    points:[
+      {l:"名詞的用法（〜すること）",b:"主語・目的語・補語になる。<br><strong>例:</strong> <strong>To travel</strong> is fun. / I want <strong>to study</strong>."},
+      {l:"形容詞的用法（〜するための）",b:"名詞の後ろに置いて名詞を修飾。<br><strong>例:</strong> I need something <strong>to eat</strong>. / She has no time <strong>to rest</strong>."},
+      {l:"副詞的用法（〜するために・〜して）",b:"目的・感情の原因・結果を表す。<br><strong>例:</strong> I went to buy milk. / I'm glad <strong>to hear</strong> that."},
+      {l:"to不定詞を取る動詞",b:"want, hope, wish, decide, plan, promise, need, try, agree, refuse など"},
+      {l:"It is ... to〜 構文",b:"「〜することは...だ」重要構文。<br><strong>例:</strong> It is important <strong>to exercise</strong>. / It is easy <strong>to make mistakes</strong>."},
     ],
-    examples: [
-      { en: "I want to visit Paris someday.", ja: "私はいつかパリを訪れたいです。（名詞的）" },
-      { en: "I need a pen to write with.", ja: "私は書くためのペンが必要です。（形容詞的）" },
-      { en: "She studied hard to pass the exam.", ja: "彼女は試験に合格するために一生懸命勉強しました。（副詞的）" },
-      { en: "It is difficult to learn Chinese.", ja: "中国語を学ぶことは難しいです。" },
-      { en: "He decided to quit his job.", ja: "彼は仕事を辞めることを決めました。" },
+    ex:[
+      {en:"I want to visit Paris someday.",ja:"私はいつかパリを訪れたいです。（名詞的）"},
+      {en:"I need a pen to write with.",ja:"私は書くためのペンが必要です。（形容詞的）"},
+      {en:"She studied hard to pass the exam.",ja:"彼女は試験に合格するために一生懸命勉強した。（副詞的）"},
+      {en:"It is difficult to learn Chinese.",ja:"中国語を学ぶことは難しいです。"},
+      {en:"He decided to quit his job.",ja:"彼は仕事を辞めることを決めました。"},
     ],
-    quiz: [
-      { ja: "私は新しい言語を学ぶことを計画しています。", en: "I plan to learn a new language.", note: "plan + to不定詞" },
-      { ja: "飲むための水を持ってきてください。", en: "Please bring some water to drink.", note: "形容詞的用法: water を修飾" },
-      { ja: "彼女は健康を維持するためにジムに行きます。", en: "She goes to the gym to stay healthy.", note: "副詞的用法: 目的を表す" },
-      { ja: "毎日英語を練習することが大切です。", en: "It is important to practice English every day.", note: "It is ... to 〜 構文" },
-      { ja: "彼はその申し出を断ることを決めました。", en: "He decided to refuse the offer.", note: "decide + to不定詞" },
+    quiz:[
+      {ja:"私は新しい言語を学ぶことを計画しています。",en:"I plan to learn a new language.",note:"plan＋to不定詞"},
+      {ja:"飲むための水を持ってきてください。",en:"Please bring some water to drink.",note:"形容詞的用法: water を修飾"},
+      {ja:"彼女は健康を維持するためにジムに行きます。",en:"She goes to the gym to stay healthy.",note:"副詞的用法: 目的を表す"},
+      {ja:"毎日英語を練習することが大切です。",en:"It is important to practice English every day.",note:"It is ... to〜 構文"},
+      {ja:"彼はその申し出を断ることを決めました。",en:"He decided to refuse the offer.",note:"decide＋to不定詞"},
     ]
   },
   {
-    title: "過去分詞系",
-    subtitle: "受動態・完了形・分詞形容詞",
-    desc: "動詞の過去分詞形（done, made, written など）は3つの場面で活躍します。",
-    points: [
-      { label: "受動態（〜される・〜された）", text: "<strong>be動詞 + 過去分詞</strong>。動作を受ける側を主語にする。<br><strong>例:</strong> This book <strong>was written</strong> by him. / English <strong>is spoken</strong> here." },
-      { label: "現在完了（have/has + 過去分詞）", text: "「〜したことがある・〜したところだ・〜し続けている」<br><strong>例:</strong> I <strong>have visited</strong> London twice. / She <strong>has finished</strong> her work." },
-      { label: "過去完了（had + 過去分詞）", text: "過去のある時点よりさらに前に起きたこと。<br><strong>例:</strong> When I arrived, he <strong>had already left</strong>." },
-      { label: "分詞形容詞（過去分詞が形容詞）", text: "名詞を修飾したり、補語になったりする。<br><strong>例:</strong> a <strong>broken</strong> window / I'm <strong>tired</strong>. / She looks <strong>surprised</strong>." },
-      { label: "受動態の時制変化", text: "現在: is/are done / 過去: was/were done / 未来: will be done / 現在完了: has/have been done" },
+    title:"過去分詞系",
+    subtitle:"受動態・完了形・分詞形容詞",
+    desc:"動詞の過去分詞形（done, made, written など）は3つの場面で活躍します。",
+    points:[
+      {l:"受動態（〜される・〜された）",b:"<strong>be動詞＋過去分詞</strong>。動作を受ける側を主語に。<br><strong>例:</strong> This book <strong>was written</strong> by him. / English <strong>is spoken</strong> here."},
+      {l:"現在完了（have/has＋過去分詞）",b:"「〜したことがある・〜したところだ・〜し続けている」<br><strong>例:</strong> I <strong>have visited</strong> London twice."},
+      {l:"過去完了（had＋過去分詞）",b:"過去のある時点よりさらに前のこと。<br><strong>例:</strong> When I arrived, he <strong>had already left</strong>."},
+      {l:"分詞形容詞",b:"名詞を修飾したり補語になる。<br><strong>例:</strong> a <strong>broken</strong> window / I'm <strong>tired</strong>. / She looks <strong>surprised</strong>."},
+      {l:"受動態の時制変化",b:"現在: is/are done / 過去: was/were done / 未来: will be done / 完了: has/have been done"},
     ],
-    examples: [
-      { en: "The tower was built 100 years ago.", ja: "その塔は100年前に建てられました。（受動態）" },
-      { en: "I have never eaten sushi.", ja: "私はお寿司を食べたことがありません。（現在完了）" },
-      { en: "The window was broken by the wind.", ja: "窓は風によって割られました。" },
-      { en: "Have you ever been to New York?", ja: "ニューヨークに行ったことはありますか？" },
-      { en: "The report will be submitted by tomorrow.", ja: "レポートは明日までに提出されます。" },
+    ex:[
+      {en:"The tower was built 100 years ago.",ja:"その塔は100年前に建てられました。"},
+      {en:"I have never eaten sushi.",ja:"私はお寿司を食べたことがありません。"},
+      {en:"The window was broken by the wind.",ja:"窓は風によって割られました。"},
+      {en:"Have you ever been to New York?",ja:"ニューヨークに行ったことはありますか？"},
+      {en:"The report will be submitted by tomorrow.",ja:"レポートは明日までに提出されます。"},
     ],
-    quiz: [
-      { ja: "この歌は多くの人々に愛されています。", en: "This song is loved by many people.", note: "現在の受動態: is + 過去分詞" },
-      { ja: "私はその映画を3回見たことがあります。", en: "I have seen that movie three times.", note: "現在完了（経験）: have + 過去分詞" },
-      { ja: "そのケーキは彼女によって作られました。", en: "The cake was made by her.", note: "過去の受動態: was + 過去分詞" },
-      { ja: "彼が到着したとき、パーティーはすでに終わっていました。", en: "When he arrived, the party had already ended.", note: "過去完了: had + 過去分詞" },
-      { ja: "その壊れた車は修理される必要があります。", en: "The broken car needs to be repaired.", note: "broken = 分詞形容詞、needs to be repaired = 受動態" },
+    quiz:[
+      {ja:"この歌は多くの人々に愛されています。",en:"This song is loved by many people.",note:"現在の受動態: is＋過去分詞"},
+      {ja:"私はその映画を3回見たことがあります。",en:"I have seen that movie three times.",note:"現在完了（経験）: have＋過去分詞"},
+      {ja:"そのケーキは彼女によって作られました。",en:"The cake was made by her.",note:"過去の受動態: was＋過去分詞"},
+      {ja:"彼が到着したとき、パーティーはすでに終わっていました。",en:"When he arrived, the party had already ended.",note:"過去完了: had＋過去分詞"},
+      {ja:"その壊れた車は修理される必要があります。",en:"The broken car needs to be repaired.",note:"broken=分詞形容詞、needs to be repaired=受動態"},
     ]
   },
   {
-    title: "節",
-    subtitle: "名詞節・形容詞節・副詞節",
-    desc: "節は「主語＋動詞を含む語のかたまり」。文の中で名詞・形容詞・副詞の役割を果たします。",
-    points: [
-      { label: "名詞節（that / if / whether / WH語）", text: "主語・目的語・補語になる節。<br><strong>例:</strong> I think <strong>that he is right</strong>. / I wonder <strong>if she will come</strong>." },
-      { label: "形容詞節（関係詞節）", text: "名詞を修飾する節。（Unit 9で詳しく学習）<br><strong>例:</strong> The man <strong>who called you</strong> is my boss." },
-      { label: "副詞節（時・条件・理由・譲歩）", text: "動詞・文全体を修飾する節。<br><strong>when, if, because, although, while, unless, after, before, until</strong>" },
-      { label: "時の副詞節（未来の注意）", text: "時を表す副詞節の中では、未来のことでも現在形を使う。<br><strong>例:</strong> I'll call you <strong>when I arrive</strong>. (×when I will arrive)" },
-      { label: "条件の副詞節", text: "条件節の中でも未来のことに現在形を使う。<br><strong>例:</strong> If it <strong>rains</strong> tomorrow, I'll stay home." },
+    title:"節",
+    subtitle:"名詞節・形容詞節・副詞節",
+    desc:"節は「主語＋動詞を含む語のかたまり」。文の中で名詞・形容詞・副詞の役割を果たします。",
+    points:[
+      {l:"名詞節（that / if / whether / WH語）",b:"主語・目的語・補語になる節。<br><strong>例:</strong> I think <strong>that he is right</strong>. / I wonder <strong>if she will come</strong>."},
+      {l:"形容詞節（関係詞節）",b:"名詞を修飾する節。（Unit 9 で詳しく学習）<br><strong>例:</strong> The man <strong>who called you</strong> is my boss."},
+      {l:"副詞節（時・条件・理由・譲歩）",b:"動詞・文全体を修飾。<br><strong>when, if, because, although, while, unless, after, before, until</strong>"},
+      {l:"時の副詞節（未来の注意）",b:"時を表す副詞節の中では、未来のことでも現在形を使う。<br><strong>例:</strong> I'll call you <strong>when I arrive</strong>. （×will arrive）"},
+      {l:"条件の副詞節",b:"条件節の中でも未来のことに現在形を使う。<br><strong>例:</strong> If it <strong>rains</strong> tomorrow, I'll stay home."},
     ],
-    examples: [
-      { en: "I believe that practice makes perfect.", ja: "私は練習が完璧を生むと信じています。（名詞節）" },
-      { en: "Call me when you arrive at the station.", ja: "駅に着いたら電話してください。（副詞節）" },
-      { en: "Although it was raining, we went out.", ja: "雨が降っていたけれど、私たちは外出しました。（副詞節）" },
-      { en: "She asked me if I was hungry.", ja: "彼女は私にお腹が空いているかどうか聞きました。（名詞節）" },
-      { en: "I'll wait here until she comes back.", ja: "彼女が戻るまでここで待ちます。" },
+    ex:[
+      {en:"I believe that practice makes perfect.",ja:"練習が完璧を生むと信じています。（名詞節）"},
+      {en:"Call me when you arrive at the station.",ja:"駅に着いたら電話してください。（副詞節）"},
+      {en:"Although it was raining, we went out.",ja:"雨が降っていたけれど外出しました。（副詞節）"},
+      {en:"She asked me if I was hungry.",ja:"彼女はお腹が空いているか聞きました。（名詞節）"},
+      {en:"I'll wait here until she comes back.",ja:"彼女が戻るまでここで待ちます。"},
     ],
-    quiz: [
-      { ja: "私は彼が正直だと思います。", en: "I think that he is honest.", note: "名詞節: think that 〜" },
-      { ja: "もし明日晴れたら、ピクニックに行きましょう。", en: "If it is sunny tomorrow, let's go on a picnic.", note: "条件節の中は現在形" },
-      { ja: "彼女が来るまで待ちました。", en: "I waited until she came.", note: "until + 副詞節" },
-      { ja: "疲れていたけれど、彼は仕事を続けました。", en: "Although he was tired, he continued working.", note: "譲歩の副詞節 although" },
-      { ja: "彼が言ったことは本当です。", en: "What he said is true.", note: "what節が主語になる名詞節" },
+    quiz:[
+      {ja:"私は彼が正直だと思います。",en:"I think that he is honest.",note:"名詞節: think that〜"},
+      {ja:"もし明日晴れたら、ピクニックに行きましょう。",en:"If it is sunny tomorrow, let's go on a picnic.",note:"条件節の中は現在形"},
+      {ja:"彼女が来るまで待ちました。",en:"I waited until she came.",note:"until＋副詞節"},
+      {ja:"疲れていたけれど、彼は仕事を続けました。",en:"Although he was tired, he continued working.",note:"譲歩の副詞節 although"},
+      {ja:"彼が言ったことは本当です。",en:"What he said is true.",note:"what節が主語になる名詞節"},
     ]
   },
   {
-    title: "疑問文",
-    subtitle: "Yes/No疑問文・WH疑問文・付加疑問文",
-    desc: "英語の疑問文は語順の変化で作ります。3つのタイプをマスターしましょう。",
-    points: [
-      { label: "Yes/No疑問文", text: "be動詞・助動詞を主語の前に出す。一般動詞はDo/Doesを文頭に。<br><strong>例:</strong> Are you ready? / Do you have time?" },
-      { label: "WH疑問文（疑問詞＋疑問文）", text: "疑問詞（what, who, where, when, why, how）を文頭に置く。<br><strong>例:</strong> Where do you live? / What time does it start?" },
-      { label: "疑問詞が主語の場合", text: "疑問詞が主語になるとき、語順は変えない。<br><strong>例:</strong> Who called you? / What happened?" },
-      { label: "付加疑問文", text: "文の後ろに短い疑問を添える。肯定文→否定の付加、否定文→肯定の付加。<br><strong>例:</strong> It's nice, <strong>isn't it?</strong> / You don't like it, <strong>do you?</strong>" },
-      { label: "間接疑問文", text: "疑問文が文の中に埋め込まれるとき、語順は普通の文と同じ。<br><strong>例:</strong> I don't know <strong>where he lives</strong>. (×where does he live)" },
+    title:"疑問文",
+    subtitle:"Yes/No疑問文・WH疑問文・付加疑問文",
+    desc:"英語の疑問文は語順の変化で作ります。3つのタイプをマスターしましょう。",
+    points:[
+      {l:"Yes/No疑問文",b:"be動詞・助動詞を主語の前に。一般動詞はDo/Doesを文頭に。<br><strong>例:</strong> Are you ready? / Do you have time?"},
+      {l:"WH疑問文",b:"疑問詞（what, who, where, when, why, how）を文頭に置く。<br><strong>例:</strong> Where do you live? / What time does it start?"},
+      {l:"疑問詞が主語の場合",b:"疑問詞が主語→語順は変えない。<br><strong>例:</strong> Who called you? / What happened?"},
+      {l:"付加疑問文",b:"肯定文→否定の付加 / 否定文→肯定の付加。<br><strong>例:</strong> It's nice, <strong>isn't it?</strong> / You don't like it, <strong>do you?</strong>"},
+      {l:"間接疑問文",b:"疑問文が文の中に埋め込まれるとき、語順は普通の文と同じ。<br><strong>例:</strong> I don't know <strong>where he lives</strong>. （×where does he live）"},
     ],
-    examples: [
-      { en: "Have you ever been to Paris?", ja: "パリに行ったことはありますか？" },
-      { en: "Why are you so happy today?", ja: "なぜ今日そんなに嬉しそうなのですか？" },
-      { en: "Who made this cake?", ja: "誰がこのケーキを作りましたか？（主語が疑問詞）" },
-      { en: "You're coming to the party, aren't you?", ja: "パーティーに来るんですよね？（付加疑問）" },
-      { en: "Can you tell me where the station is?", ja: "駅がどこにあるか教えていただけますか？（間接疑問）" },
+    ex:[
+      {en:"Have you ever been to Paris?",ja:"パリに行ったことはありますか？"},
+      {en:"Why are you so happy today?",ja:"なぜ今日そんなに嬉しそうなのですか？"},
+      {en:"Who made this cake?",ja:"誰がこのケーキを作りましたか？"},
+      {en:"You're coming to the party, aren't you?",ja:"パーティーに来るんですよね？（付加疑問）"},
+      {en:"Can you tell me where the station is?",ja:"駅がどこにあるか教えていただけますか？"},
     ],
-    quiz: [
-      { ja: "あなたはどこで英語を勉強しましたか？", en: "Where did you study English?", note: "WH疑問文: Where + did + 主語 + 動詞原形" },
-      { ja: "誰がそのドアを開けましたか？", en: "Who opened the door?", note: "疑問詞が主語 → 語順そのまま" },
-      { ja: "今日は忙しくないですよね？", en: "You're not busy today, are you?", note: "否定文への付加疑問 → are you?" },
-      { ja: "何時に会議が始まるか知っていますか？", en: "Do you know what time the meeting starts?", note: "間接疑問: what time + 主語 + 動詞（語順変えない）" },
-      { ja: "どうやってここまで来ましたか？", en: "How did you get here?", note: "How + did + 主語 + 動詞原形" },
+    quiz:[
+      {ja:"あなたはどこで英語を勉強しましたか？",en:"Where did you study English?",note:"WH疑問文: Where＋did＋主語＋動詞原形"},
+      {ja:"誰がそのドアを開けましたか？",en:"Who opened the door?",note:"疑問詞が主語 → 語順そのまま"},
+      {ja:"今日は忙しくないですよね？",en:"You're not busy today, are you?",note:"否定文への付加疑問 → are you?"},
+      {ja:"何時に会議が始まるか知っていますか？",en:"Do you know what time the meeting starts?",note:"間接疑問: what time＋主語＋動詞"},
+      {ja:"どうやってここまで来ましたか？",en:"How did you get here?",note:"How＋did＋主語＋動詞原形"},
     ]
   },
   {
-    title: "時制・時表現",
-    subtitle: "現在・過去・未来・完了・進行",
-    desc: "英語の時制はいつの話かを動詞の形で表します。日本語より細かく「いつ・どのくらい続いたか」が重要です。",
-    points: [
-      { label: "現在形", text: "習慣・事実・一般論。<strong>状態動詞は進行形にしない。</strong><br><strong>例:</strong> I drink coffee. / Water boils at 100°C. (×I am knowing)" },
-      { label: "過去形", text: "過去の特定の時点の動作・状態。<strong>yesterday, ago, last〜</strong>などと共に。<br><strong>例:</strong> I visited Kyoto last year." },
-      { label: "未来表現", text: "<strong>will:</strong> 予測・意志 / <strong>be going to:</strong> 計画・根拠ある予測 / <strong>現在進行形:</strong> 近い確定未来<br><strong>例:</strong> I'm going to study. / She is meeting him tonight." },
-      { label: "現在完了形", text: "<strong>経験</strong>（〜したことがある: ever/never）/ <strong>完了</strong>（〜したところ: just/already/yet）/ <strong>継続</strong>（ずっと〜: for/since）" },
-      { label: "進行形", text: "<strong>be + ing:</strong> 今まさに進行中の動作。過去・未来の進行形もある。<br><strong>例:</strong> I was sleeping when he called." },
+    title:"時制・時表現",
+    subtitle:"現在・過去・未来・完了・進行",
+    desc:"英語の時制はいつの話かを動詞の形で表します。日本語より細かく「いつ・どのくらい続いたか」が重要です。",
+    points:[
+      {l:"現在形",b:"習慣・事実・一般論。<strong>状態動詞は進行形にしない。</strong><br><strong>例:</strong> I drink coffee. / Water boils at 100°C."},
+      {l:"過去形",b:"過去の特定の時点の動作・状態。yesterday, ago, last〜などと共に。<br><strong>例:</strong> I visited Kyoto last year."},
+      {l:"未来表現",b:"<strong>will:</strong> 予測・意志 / <strong>be going to:</strong> 計画・根拠ある予測 / <strong>現在進行形:</strong> 近い確定未来"},
+      {l:"現在完了形",b:"<strong>経験</strong>（ever/never）/ <strong>完了</strong>（just/already/yet）/ <strong>継続</strong>（for/since）"},
+      {l:"進行形",b:"<strong>be＋ing:</strong> 今まさに進行中の動作。<br><strong>例:</strong> I was sleeping when he called."},
     ],
-    examples: [
-      { en: "I have lived in Tokyo for five years.", ja: "私は5年間東京に住んでいます。（継続）" },
-      { en: "She was cooking when I arrived.", ja: "私が到着したとき、彼女は料理をしていました。（過去進行）" },
-      { en: "I'm going to visit my parents next week.", ja: "来週、両親を訪ねる予定です。（計画）" },
-      { en: "Have you finished your homework yet?", ja: "もう宿題は終わりましたか？（完了）" },
-      { en: "It will probably rain tomorrow.", ja: "明日はおそらく雨が降るでしょう。（予測）" },
+    ex:[
+      {en:"I have lived in Tokyo for five years.",ja:"私は5年間東京に住んでいます。（継続）"},
+      {en:"She was cooking when I arrived.",ja:"私が到着したとき、彼女は料理していました。"},
+      {en:"I'm going to visit my parents next week.",ja:"来週、両親を訪ねる予定です。（計画）"},
+      {en:"Have you finished your homework yet?",ja:"もう宿題は終わりましたか？（完了）"},
+      {en:"It will probably rain tomorrow.",ja:"明日はおそらく雨が降るでしょう。（予測）"},
     ],
-    quiz: [
-      { ja: "私は3年間この会社で働いています。", en: "I have worked at this company for three years.", note: "現在完了（継続）: have + 過去分詞 + for" },
-      { ja: "彼女は昨日その映画を見ました。", en: "She watched that movie yesterday.", note: "過去形: yesterday と共に使う" },
-      { ja: "あなたは今何をしていますか？", en: "What are you doing now?", note: "現在進行形: be + ing" },
-      { ja: "私は来月京都に行く予定です。", en: "I am going to visit Kyoto next month.", note: "計画・予定 = be going to" },
-      { ja: "私は今まで一度もフランスに行ったことがありません。", en: "I have never been to France.", note: "現在完了（経験）の否定: have never + 過去分詞" },
+    quiz:[
+      {ja:"私は3年間この会社で働いています。",en:"I have worked at this company for three years.",note:"現在完了（継続）: have＋過去分詞＋for"},
+      {ja:"彼女は昨日その映画を見ました。",en:"She watched that movie yesterday.",note:"過去形: yesterday と共に"},
+      {ja:"あなたは今何をしていますか？",en:"What are you doing now?",note:"現在進行形: be＋ing"},
+      {ja:"私は来月京都に行く予定です。",en:"I am going to visit Kyoto next month.",note:"計画・予定 = be going to"},
+      {ja:"私は今まで一度もフランスに行ったことがありません。",en:"I have never been to France.",note:"現在完了（経験）の否定: have never＋過去分詞"},
     ]
   },
   {
-    title: "接続詞",
-    subtitle: "等位接続詞・従属接続詞・相関接続詞",
-    desc: "接続詞は語と語、節と節をつなぐ言葉。文の関係性（理由・条件・対比など）を明確にします。",
-    points: [
-      { label: "等位接続詞（対等につなぐ）", text: "<strong>and</strong>（〜と・そして）/ <strong>but</strong>（しかし）/ <strong>or</strong>（または）/ <strong>so</strong>（だから）/ <strong>for</strong>（なぜなら）/ <strong>yet</strong>（しかし）/ <strong>nor</strong>（〜もない）" },
-      { label: "従属接続詞（時・理由）", text: "<strong>when, while, after, before, until, as soon as</strong>（時）<br><strong>because, since, as</strong>（理由）" },
-      { label: "従属接続詞（条件・譲歩）", text: "<strong>if, unless, as long as</strong>（条件）<br><strong>although, though, even though, even if</strong>（譲歩）" },
-      { label: "相関接続詞", text: "<strong>both A and B</strong>（AとBの両方）/ <strong>either A or B</strong>（AかBのどちらか）/ <strong>neither A nor B</strong>（AもBも〜ない）/ <strong>not only A but also B</strong>（AだけでなくBも）" },
-      { label: "接続副詞（文と文をつなぐ）", text: "<strong>however</strong>（しかしながら）/ <strong>therefore</strong>（したがって）/ <strong>moreover</strong>（さらに）/ <strong>for example</strong>（例えば）" },
+    title:"接続詞",
+    subtitle:"等位接続詞・従属接続詞・相関接続詞",
+    desc:"接続詞は語と語、節と節をつなぐ言葉。文の関係性（理由・条件・対比など）を明確にします。",
+    points:[
+      {l:"等位接続詞（対等につなぐ）",b:"<strong>and</strong>（そして）/ <strong>but</strong>（しかし）/ <strong>or</strong>（または）/ <strong>so</strong>（だから）/ <strong>yet</strong>（しかし）"},
+      {l:"従属接続詞（時・理由）",b:"<strong>when, while, after, before, until, as soon as</strong>（時）<br><strong>because, since, as</strong>（理由）"},
+      {l:"従属接続詞（条件・譲歩）",b:"<strong>if, unless, as long as</strong>（条件）<br><strong>although, though, even though, even if</strong>（譲歩）"},
+      {l:"相関接続詞",b:"<strong>both A and B</strong> / <strong>either A or B</strong> / <strong>neither A nor B</strong> / <strong>not only A but also B</strong>"},
+      {l:"接続副詞",b:"<strong>however</strong>（しかしながら）/ <strong>therefore</strong>（したがって）/ <strong>moreover</strong>（さらに）/ <strong>for example</strong>（例えば）"},
     ],
-    examples: [
-      { en: "I was tired, but I kept working.", ja: "疲れていたけれど、働き続けました。" },
-      { en: "She studies hard because she wants to pass the exam.", ja: "試験に合格したいので、一生懸命勉強します。" },
-      { en: "Unless you hurry, you'll miss the train.", ja: "急がないと電車に乗り遅れますよ。" },
-      { en: "Both my mother and my father are teachers.", ja: "母も父も先生です。" },
-      { en: "It was raining; however, we enjoyed the event.", ja: "雨が降っていたが、イベントを楽しみました。" },
+    ex:[
+      {en:"I was tired, but I kept working.",ja:"疲れていたけれど、働き続けました。"},
+      {en:"She studies hard because she wants to pass the exam.",ja:"試験に合格したいので一生懸命勉強します。"},
+      {en:"Unless you hurry, you'll miss the train.",ja:"急がないと電車に乗り遅れますよ。"},
+      {en:"Both my mother and my father are teachers.",ja:"母も父も先生です。"},
+      {en:"It was raining; however, we enjoyed the event.",ja:"雨が降っていたが、イベントを楽しみました。"},
     ],
-    quiz: [
-      { ja: "彼は疲れていたので、早く寝ました。", en: "He went to bed early because he was tired.", note: "理由の接続詞 because" },
-      { ja: "音楽も映画も好きです。（両方）", en: "I like both music and movies.", note: "相関接続詞 both A and B" },
-      { ja: "一生懸命練習すれば、上手くなれます。", en: "If you practice hard, you will get better.", note: "条件の if（条件節は現在形）" },
-      { ja: "彼は英語だけでなくフランス語も話せます。", en: "He can speak not only English but also French.", note: "相関接続詞 not only A but also B" },
-      { ja: "私が駅に着いたとき、電車はすでに出発していました。", en: "When I arrived at the station, the train had already left.", note: "時の接続詞 when + 過去完了" },
+    quiz:[
+      {ja:"彼は疲れていたので、早く寝ました。",en:"He went to bed early because he was tired.",note:"理由の接続詞 because"},
+      {ja:"音楽も映画も好きです。",en:"I like both music and movies.",note:"相関接続詞 both A and B"},
+      {ja:"一生懸命練習すれば、上手くなれます。",en:"If you practice hard, you will get better.",note:"条件の if（条件節は現在形）"},
+      {ja:"彼は英語だけでなくフランス語も話せます。",en:"He can speak not only English but also French.",note:"相関接続詞 not only A but also B"},
+      {ja:"私が駅に着いたとき、電車はすでに出発していました。",en:"When I arrived at the station, the train had already left.",note:"時の接続詞 when＋過去完了"},
     ]
   }
 ];
 
-const navList = document.getElementById('nav-list');
-const mainEl = document.getElementById('main');
-const progressFill = document.getElementById('progress-fill');
-const progressText = document.getElementById('progress-text');
-let done = new Set();
+/* ── RENDER ── */
 let current = 0;
+let done = new Set();
 
-function renderNav() {
-  navList.innerHTML = '';
-  units.forEach((u, i) => {
-    const el = document.createElement('div');
-    el.className = 'nav-item' + (i === current ? ' active' : '') + (done.has(i) ? ' done' : '');
-    el.innerHTML = `<span class="nav-num">${i+1}</span><span>${u.title}</span>`;
-    el.onclick = () => showUnit(i);
-    navList.appendChild(el);
-  });
+function getColor(i){ return unitColors[i] || '#00E5FF'; }
+
+function buildNav(){
+  const nav = document.getElementById('nav-list');
+  nav.innerHTML = units.map((u,i)=>`
+    <div class="nav-item${i===current?' active':''}${done.has(i)?' done':''}" onclick="showUnit(${i})">
+      <div class="nav-icon-wrap" style="color:${getColor(i)}">${icons[i]}</div>
+      <div class="nav-text">
+        <span class="nav-text-jp">${u.title}</span>
+        <span class="nav-text-num">UNIT ${String(i+1).padStart(2,'0')}</span>
+      </div>
+      <div class="nav-done-mark"><svg viewBox="0 0 8 8" fill="none"><path d="M1 4l2 2 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    </div>`).join('');
 }
 
-function renderUnit(i) {
+function buildUnit(i){
   const u = units[i];
+  const col = getColor(i);
   return `
-  <div class="unit active" id="unit-${i}">
-    <div class="unit-header">
-      <div class="unit-tag">Unit ${i+1} / 16</div>
-      <h2>${u.title}</h2>
-      <p>${u.subtitle} — ${u.desc}</p>
+  <div class="unit-hdr">
+    <div class="unit-icon-hero" style="border-color:${col}40;background:${col}0A;color:${col}">
+      ${icons[i]}
     </div>
+    <div class="unit-hdr-text">
+      <div class="unit-tag">UNIT ${String(i+1).padStart(2,'0')} / 16 &nbsp;—&nbsp; ${u.subtitle}</div>
+      <h2 style="color:${col};text-shadow:0 0 30px ${col}40">${u.title}</h2>
+      <div class="unit-desc">${u.desc}</div>
+    </div>
+  </div>
+  <div class="glow-line" style="background:linear-gradient(90deg,${col} 0%,${col}22 60%,transparent 100%);box-shadow:0 0 8px ${col}50"></div>
 
-    <div class="section">
-      <h3>重要ポイント</h3>
-      <ul class="point-list">
-        ${u.points.map(p => `<li><strong>${p.label}</strong><br>${p.text}</li>`).join('')}
-      </ul>
-    </div>
+  <div class="card">
+    <div class="card-title" style="color:${col}">KEY POINTS — 重要ポイント</div>
+    ${u.points.map(p=>`
+    <div class="point-item">
+      <div class="point-label" style="color:${col}">${p.l}</div>
+      <div class="point-body">${p.b}</div>
+    </div>`).join('')}
+  </div>
 
-    <div class="section">
-      <h3>例文</h3>
-      <table class="example-table">
-        <thead><tr><th>英語</th><th>日本語</th></tr></thead>
-        <tbody>
-          ${u.examples.map(e => `<tr><td class="en">${e.en}</td><td class="ja">${e.ja}</td></tr>`).join('')}
-        </tbody>
-      </table>
-    </div>
+  <div class="card">
+    <div class="card-title" style="color:${col}">EXAMPLES — 例文</div>
+    <table class="ex-table">
+      <thead><tr><th>ENGLISH</th><th>日本語</th></tr></thead>
+      <tbody>${u.ex.map(e=>`
+      <tr>
+        <td><div class="en-cell">${e.en}</div></td>
+        <td><div class="ja-cell">${e.ja}</div></td>
+      </tr>`).join('')}</tbody>
+    </table>
+  </div>
 
-    <div class="quiz-section">
-      <h3>練習問題：日本語を英語にしよう（各5問）</h3>
-      ${u.quiz.map((q, qi) => `
-      <div class="quiz-item">
-        <div class="q-text"><span class="q-num">Q${qi+1}</span> 次の日本語を英語にしてください：<br><strong>「${q.ja}」</strong></div>
-        <button class="reveal-btn" onclick="toggleAnswer(this)">答えを見る</button>
-        <div class="answer">
-          <div class="ans-en">${q.en}</div>
-          <div class="ans-note">📝 ${q.note}</div>
-        </div>
-      </div>`).join('')}
-      <button class="btn btn-primary" style="margin-top:0.5rem" onclick="markDone(${i})">✓ このユニットを完了にする</button>
+  <div class="quiz-card">
+    <div class="quiz-header">TRANSLATION DRILL — 日→英 翻訳練習（各5問）</div>
+    ${u.quiz.map((q,qi)=>`
+    <div class="q-item">
+      <div class="q-num">Q${qi+1}</div>
+      <div class="q-text">次の日本語を英語にしてください</div>
+      <div class="q-jp">「${q.ja}」</div>
+      <button class="reveal-btn" onclick="toggleAns(this)">REVEAL ANSWER</button>
+      <div class="answer">
+        <div class="ans-en">${q.en}</div>
+        <div class="ans-note">NOTE: ${q.note}</div>
+      </div>
+    </div>`).join('')}
+    <div class="btn-row" style="margin-top:1.2rem">
+      <button class="btn btn-done" onclick="markDone(${i})">✓ UNIT COMPLETE</button>
     </div>
+  </div>
 
-    <div class="nav-btns">
-      ${i > 0 ? `<button class="btn btn-outline" onclick="showUnit(${i-1})">← 前のユニット</button>` : ''}
-      ${i < units.length-1 ? `<button class="btn btn-primary" onclick="showUnit(${i+1})">次のユニット →</button>` : '<div style="padding:.6rem 1.4rem;color:var(--accent);font-weight:700;">🎉 全ユニット完了！</div>'}
-    </div>
+  <div class="btn-row">
+    ${i>0?`<button class="btn btn-outline" onclick="showUnit(${i-1})">← PREV</button>`:''}
+    ${i<units.length-1?`<button class="btn btn-primary" onclick="showUnit(${i+1})">NEXT →</button>`:
+    `<div class="complete-banner" style="flex:1"><h3>ALL 16 UNITS COMPLETE</h3><p>全ユニット修了おめでとうございます！</p></div>`}
   </div>`;
 }
 
-function showUnit(i) {
+function showUnit(i){
   current = i;
-  mainEl.innerHTML = renderUnit(i);
-  renderNav();
-  window.scrollTo(0, 0);
+  document.getElementById('main').innerHTML = buildUnit(i);
+  buildNav();
+  document.getElementById('main').scrollTop = 0;
+  window.scrollTo(0,0);
 }
 
-function toggleAnswer(btn) {
+function toggleAns(btn){
   const ans = btn.nextElementSibling;
-  if (ans.classList.contains('shown')) {
-    ans.classList.remove('shown');
-    btn.textContent = '答えを見る';
-  } else {
-    ans.classList.add('shown');
-    btn.textContent = '隠す';
-  }
+  const shown = ans.classList.toggle('shown');
+  btn.textContent = shown ? 'HIDE' : 'REVEAL ANSWER';
 }
 
-function markDone(i) {
+function markDone(i){
   done.add(i);
-  const pct = Math.round(done.size / units.length * 100);
-  progressFill.style.width = pct + '%';
-  progressText.textContent = `${done.size} / ${units.length} 単元完了`;
-  renderNav();
-  if (i < units.length - 1) showUnit(i + 1);
+  const pct = Math.round(done.size/units.length*100);
+  document.getElementById('prog-fill').style.width = pct+'%';
+  document.getElementById('prog-label-val').textContent = `${done.size} / ${units.length}`;
+  buildNav();
+  if(i < units.length-1) showUnit(i+1);
 }
 
+buildNav();
 showUnit(0);
 </script>
 </body>
