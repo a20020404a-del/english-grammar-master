@@ -657,6 +657,24 @@ ${questions.map(q=>`<div class="quiz-item">
 </div>`;
 }
 
+function levelQuiz(questions, level){
+  const isB=level==='初級';
+  const cls=isB?'green':'blue';
+  const col=isB?'var(--green)':'var(--blue)';
+  const icon=isB?'🌱':'🔥';
+  const desc=isB?'基本的な文型・語彙を使って訳してみましょう。まずは自分で考えてから答えを確認！':'やや複雑な表現・応用文法を使った問題です。じっくり考えてから答えを確認しましょう。';
+  return `<div class="gram-section ${cls}"><div class="sec-num" style="background:${col}">${icon}</div>
+<h3 class="sec-title">${level}練習問題 — 日本語→英語</h3>
+<div class="point-box ${isB?'rule':'note'}" style="margin-bottom:12px"><div class="point-box-label">${level}レベル</div>${desc}</div>
+${questions.map(q=>`<div class="quiz-item">
+  <div class="quiz-q">${q.q}</div>
+  <div class="quiz-hint">クリックして答えを確認</div>
+  <button class="quiz-btn" onclick="toggleQuiz(this)">答えを見る</button>
+  <div class="quiz-answer"><span class="quiz-ans-en">${q.a}</span><span class="quiz-ans-note">${q.n}</span></div>
+</div>`).join('')}
+</div>`;
+}
+
 // ═══════════════════════════════════════════════════════════════════════════════
 // UNIT 1
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -828,6 +846,20 @@ ${quiz([
   {q:'彼女は私に本をくれました。',a:'She gave me a book.',n:'SVOO文型。gave＝giveの過去形'},
   {q:'その音楽は私を幸せにします。',a:'The music makes me happy.',n:'SVOC文型：make＋O＋形容詞'},
 ])}
+${levelQuiz([
+  {q:'私は学生です。',a:'I am a student.',n:'SVC文型。be動詞で主語の状態を説明'},
+  {q:'彼は走ります。',a:'He runs.',n:'SV文型。主語＋動詞だけで完結'},
+  {q:'彼女はりんごを食べます。',a:'She eats an apple.',n:'SVO文型。主語が3人称単数なのでeats'},
+  {q:'私は魚が好きではありません。',a:"I don't like fish.",n:'一般動詞の否定：do not（don\'t）＋動詞原形'},
+  {q:'あなたは今忙しいですか？',a:'Are you busy now?',n:'be動詞の疑問文：be動詞を主語の前に'},
+],'初級')}
+${levelQuiz([
+  {q:'彼女は私にプレゼントをくれました。',a:'She gave me a present.',n:'SVOO文型。gave＝giveの過去形'},
+  {q:'彼らは彼をボスと呼びます。',a:'They call him the boss.',n:'SVOC文型：call＋O＋名詞'},
+  {q:'私たちは窓を開けたままにしました。',a:'We kept the window open.',n:'SVOC文型：keep＋O＋形容詞'},
+  {q:'彼は昨日学校に来ませんでしたか？',a:"Didn't he come to school yesterday?",n:'否定疑問文：Didn\'t＋主語＋動詞原形'},
+  {q:'この映画は見る価値があると思います。',a:'I think this movie is worth watching.',n:'think that節＋be worth -ing'},
+],'中級')}
 ${doneBtn(1)}
 `}
 
@@ -947,6 +979,20 @@ ${quiz([
   {q:'犬は人間の友達です（一般論）。',a:'Dogs are friends of humans.',n:'一般論の複数形→無冠詞'},
   {q:'彼はお金を全く持っていません。',a:"He doesn't have any money.",n:'moneyは不可算名詞'},
 ])}
+${levelQuiz([
+  {q:'私は犬を1匹飼っています。',a:'I have a dog.',n:'可算名詞の単数：a＋名詞'},
+  {q:'彼女はりんごを3つ食べました。',a:'She ate three apples.',n:'可算名詞の複数：語尾に-s'},
+  {q:'水をください。',a:'Please give me some water.',n:'不可算名詞waterにはa/an不要'},
+  {q:'その子供たちはとても元気です。',a:'The children are very energetic.',n:'childの複数形はchildren（不規則）'},
+  {q:'私はアドバイスが必要です。',a:'I need some advice.',n:'adviceは不可算名詞→複数形なし'},
+],'初級')}
+${levelQuiz([
+  {q:'情報がほとんどありません。',a:'There is little information.',n:'不可算名詞はlittle（few不可）'},
+  {q:'コーヒーを1杯飲みました。',a:'I drank a cup of coffee.',n:'不可算名詞の数量：a cup of〜'},
+  {q:'彼は毎日ニュースをほとんど読みません。',a:'He reads little news.',n:'newsは不可算→little（few不可）'},
+  {q:'机の上に本が何冊かあります。',a:'There are some books on the desk.',n:'可算名詞複数＋There are〜'},
+  {q:'彼女は2つの大学で学びました。',a:'She studied at two universities.',n:'universityの複数：-y→-ies'},
+],'中級')}
 ${doneBtn(2)}
 `}
 
@@ -1083,6 +1129,20 @@ ${quiz([
   {q:'冷蔵庫に牛乳が少しあります。',a:'There is a little milk in the fridge.',n:'milkは不可算→a little'},
   {q:'私は今日とても疲れています。',a:'I am very tired today.',n:'叙述用法：be動詞＋tired（-ed）'},
 ])}
+${levelQuiz([
+  {q:'彼は背が高いです。',a:'He is tall.',n:'叙述用法：be動詞＋形容詞'},
+  {q:'このスープはおいしそうです。',a:'This soup smells delicious.',n:'smell＋形容詞（SVC）'},
+  {q:'彼女はかわいいドレスを着ています。',a:'She is wearing a cute dress.',n:'限定用法：形容詞＋名詞'},
+  {q:'外は寒いですか？',a:'Is it cold outside?',n:'天候・気温はitを主語に'},
+  {q:'この本はとても面白いです。',a:'This book is very interesting.',n:'物の性質→-ing形容詞'},
+],'初級')}
+${levelQuiz([
+  {q:'その結果に驚きました。',a:'I was surprised at the result.',n:'be surprised at〜（人が感じる→-ed）'},
+  {q:'彼の話は退屈でした。',a:'His speech was boring.',n:'話の性質→boring（-ing形）'},
+  {q:'この問題は解くのが難しいです。',a:'This problem is difficult to solve.',n:'形容詞＋to不定詞で性質を説明'},
+  {q:'彼女はとても感動した様子でした。',a:'She seemed very moved.',n:'seem＋形容詞（SVC）；moved＝感動した'},
+  {q:'この映画はあれと同じくらい感動的です。',a:'This movie is as moving as that one.',n:'原級比較：as＋形容詞＋as'},
+],'中級')}
 ${doneBtn(3)}
 `}
 
@@ -1214,6 +1274,20 @@ ${quiz([
   {q:'彼は昨日遅く起きました。',a:'He woke up late yesterday.',n:'late（遅く）は副詞でもある'},
   {q:'彼女は最近ほとんど外出しません。',a:'She hardly goes out lately.',n:'hardly（ほとんど〜ない）＋lately（最近）'},
 ])}
+${levelQuiz([
+  {q:'彼女はとても速く走ります。',a:'She runs very fast.',n:'fastは副詞として動詞を修飾'},
+  {q:'私は毎日英語を練習します。',a:'I practice English every day.',n:'頻度の副詞句は文末に'},
+  {q:'彼はゆっくり話します。',a:'He speaks slowly.',n:'slowlyはspeaksを修飾する副詞'},
+  {q:'彼女はもう帰りました。',a:'She has already left.',n:'alreadyは現在完了でよく使う'},
+  {q:'彼はまだ寝ています。',a:'He is still sleeping.',n:'still＝まだ（継続）'},
+],'初級')}
+${levelQuiz([
+  {q:'彼はほとんど宿題をしません。',a:'He hardly does his homework.',n:'hardly＝ほとんど〜ない（否定的な副詞）'},
+  {q:'彼女はめったに遅刻しません。',a:'She rarely comes late.',n:'rarely＝めったに〜ない（頻度副詞）'},
+  {q:'その映画はかなり面白かったです。',a:'The movie was quite interesting.',n:'quite＝かなり（程度副詞）'},
+  {q:'私はようやく答えがわかりました。',a:'I finally understood the answer.',n:'finally＝ようやく（時の副詞）'},
+  {q:'彼はほぼ毎日運動します。',a:'He exercises almost every day.',n:'almost＝ほぼ（程度副詞）'},
+],'中級')}
 ${doneBtn(4)}
 `}
 
@@ -1348,6 +1422,20 @@ ${quiz([
   {q:'今日は昨日よりずっと寒いです。',a:'Today is much colder than yesterday.',n:'much＋比較級で強調'},
   {q:'彼は私より英語が上手に話せます。',a:'He speaks English better than I do.',n:'wellの比較級はbetter'},
 ])}
+${levelQuiz([
+  {q:'彼は私より背が高いです。',a:'He is taller than me.',n:'1音節の形容詞：-er + than'},
+  {q:'これが3つの中で一番安いです。',a:'This is the cheapest of the three.',n:'最上級：the + -est + of'},
+  {q:'このバッグはあれと同じくらい高価です。',a:'This bag is as expensive as that one.',n:'原級比較：as + 形容詞 + as'},
+  {q:'彼女はクラスで一番速く走ります。',a:'She runs the fastest in the class.',n:'副詞の最上級：the + fastest'},
+  {q:'今日は昨日より暖かいです。',a:'Today is warmer than yesterday.',n:'warm → warmer（1音節）'},
+],'初級')}
+${levelQuiz([
+  {q:'彼女は私が思っていたよりずっと若く見えます。',a:'She looks much younger than I thought.',n:'much＋比較級で強調。比較級の中は過去形'},
+  {q:'だんだん暖かくなってきています。',a:'It is getting warmer and warmer.',n:'比較級 and 比較級＝だんだん〜'},
+  {q:'この本はあの本ほど面白くありません。',a:'This book is not as interesting as that one.',n:'not as〜as＝〜ほど…ない'},
+  {q:'あなたが練習すればするほど上達します。',a:'The more you practice, the better you become.',n:'The 比較級〜, the 比較級〜構文'},
+  {q:'彼はどの選手よりも速く走ります。',a:'He runs faster than any other player.',n:'比較級＋than any other＋単数名詞'},
+],'中級')}
 ${doneBtn(5)}
 `}
 
@@ -1450,6 +1538,20 @@ ${quiz([
   {q:'誰もその答えを知りませんでした。',a:'Nobody knew the answer.',n:'nobodyが主語→単数扱い'},
   {q:'彼の言ったことが必ずしも正しいわけではない。',a:'What he said is not necessarily true.',n:'部分否定：not necessarily（必ずしも〜ない）'},
 ])}
+${levelQuiz([
+  {q:'私はテレビを見ません。',a:"I don't watch TV.",n:"一般動詞の否定：don't＋動詞原形"},
+  {q:'彼は昨日学校に行きませんでした。',a:"He didn't go to school yesterday.",n:"過去の否定：didn't＋動詞原形"},
+  {q:'私は全く眠れませんでした。',a:"I couldn't sleep at all.",n:'not〜at all＝全く〜ない'},
+  {q:'そこには誰もいませんでした。',a:'There was nobody there.',n:'nobody＝誰も〜ない（単数扱い）'},
+  {q:'彼女は今日忙しくありません。',a:"She isn't busy today.",n:"be動詞の否定：isn't"},
+],'初級')}
+${levelQuiz([
+  {q:'彼はまだ返事をしていません。',a:"He hasn't replied yet.",n:"現在完了の否定＋yet（まだ〜していない）"},
+  {q:'彼女は決して諦めません。',a:'She never gives up.',n:'never＝絶対に〜ない（頻度副詞、否定）'},
+  {q:'全員が賛成したわけではありません。',a:'Not everyone agreed.',n:'部分否定：not everyone＝全員が〜ではない'},
+  {q:'私は彼らのどちらも知りません。',a:'I know neither of them.',n:'neither of〜＝どちらも〜ない'},
+  {q:'彼はほとんどお金を持っていません。',a:'He has little money.',n:'little（不可算）＝ほとんど〜ない'},
+],'中級')}
 ${doneBtn(6)}
 `}
 
@@ -1584,6 +1686,20 @@ ${quiz([
   {q:'ここでタバコを吸ってはいけません。',a:'You must not smoke here.',n:'must not＝強い禁止'},
   {q:'窓を開けていただけますか？',a:'Could you open the window?',n:'Could you〜?＝丁寧な依頼'},
 ])}
+${levelQuiz([
+  {q:'私は泳げます。',a:'I can swim.',n:'can＝能力「〜できる」＋動詞原形'},
+  {q:'明日は雨が降るかもしれません。',a:'It may rain tomorrow.',n:'may＝〜かもしれない（可能性）'},
+  {q:'あなたはもっと早く寝るべきです。',a:'You should go to bed earlier.',n:'should＝〜すべき（アドバイス）'},
+  {q:'ここで写真を撮ってはいけません。',a:'You must not take photos here.',n:'must not＝強い禁止'},
+  {q:'ドアを開けてもいいですか？',a:'May I open the door?',n:'May I〜?＝許可を求める丁寧表現'},
+],'初級')}
+${levelQuiz([
+  {q:'彼女は今頃家にいるはずです。',a:'She should be home by now.',n:'should＝〜のはず（推量）'},
+  {q:'もっと注意するべきでした。',a:'You should have been more careful.',n:'should have＋過去分詞＝〜すべきだった（後悔）'},
+  {q:'彼はきっと疲れているに違いありません。',a:'He must be tired.',n:'must＝〜に違いない（強い確信）'},
+  {q:'彼女はあのとき本当のことを言っていたはずです。',a:'She must have been telling the truth.',n:'must have＋過去分詞＝〜だったに違いない'},
+  {q:'できるならもっと早く来られたのに。',a:'I could have come earlier if I had tried.',n:'could have＋過去分詞＝〜できたはずなのに'},
+],'中級')}
 ${doneBtn(7)}
 `}
 
@@ -1744,6 +1860,20 @@ ${quiz([
   {q:'私はバス停で彼に会いました。',a:'I met him at the bus stop.',n:'ピンポイントの場所→at'},
   {q:'このレポートを明日までに提出してください。',a:'Please submit this report by tomorrow.',n:'期限はby'},
 ])}
+${levelQuiz([
+  {q:'私は東京に住んでいます。',a:'I live in Tokyo.',n:'広い場所（国・都市）はin'},
+  {q:'本は机の上にあります。',a:'The book is on the desk.',n:'接触している面→on'},
+  {q:'彼は午後3時に到着しました。',a:'He arrived at 3 p.m.',n:'ピンポイントの時刻→at'},
+  {q:'彼女は学校へ歩いていきます。',a:'She walks to school.',n:'方向・到達点→to'},
+  {q:'駅のそばにコンビニがあります。',a:'There is a convenience store by the station.',n:'〜のそば→by'},
+],'初級')}
+${levelQuiz([
+  {q:'会議は月曜日の午前10時に始まります。',a:'The meeting starts at 10 a.m. on Monday.',n:'時刻はat、曜日はon'},
+  {q:'私は長い間この町に住んでいます。',a:'I have lived in this town for a long time.',n:'現在完了＋for（継続期間）'},
+  {q:'彼は橋のそばに立っていました。',a:'He was standing by the bridge.',n:'by＝〜のそば（近接）'},
+  {q:'その店は公園の向かいにあります。',a:'The shop is across from the park.',n:'across from＝〜の向かいに'},
+  {q:'彼は2020年に日本を離れました。',a:'He left Japan in 2020.',n:'年はin（〜年に）'},
+],'中級')}
 ${doneBtn(8)}
 `}
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -1867,6 +1997,20 @@ ${quiz([
   {q:'私が尊敬している先生は厳しいです。',a:'The teacher (that) I respect is strict.',n:'目的格のthat（省略可）'},
   {q:'昨日会った男性はとても親切でした。',a:'The man (who) I met yesterday was very kind.',n:'目的格のwho（省略可）'},
 ])}
+${levelQuiz([
+  {q:'私はピアノが弾ける女性を知っています。',a:'I know a woman who can play the piano.',n:'先行詞が人→who'},
+  {q:'これが私が昨日読んだ本です。',a:'This is the book that I read yesterday.',n:'先行詞が物→that/which'},
+  {q:'彼はアメリカに住んでいる友達がいます。',a:'He has a friend who lives in America.',n:'who＋動詞（主格の関係代名詞）'},
+  {q:'私が生まれた町は静かです。',a:'The town where I was born is quiet.',n:'先行詞が場所→where'},
+  {q:'これが私が注文した料理です。',a:'This is the dish that I ordered.',n:'目的格のthat（省略可）'},
+],'初級')}
+${levelQuiz([
+  {q:'彼が会いたかった人は今日ここにいます。',a:'The person (whom) he wanted to meet is here today.',n:'whomは目的格（フォーマル）、省略も可'},
+  {q:'彼女が成功した理由は努力です。',a:'The reason why she succeeded is her hard work.',n:'先行詞がreason→why'},
+  {q:'私が最も尊敬する人は父です。',a:'The person I respect most is my father.',n:'関係代名詞の省略（目的格）'},
+  {q:'その問題の解き方を知っている人はいますか？',a:'Is there anyone who knows how to solve the problem?',n:'anyone who〜＋間接疑問'},
+  {q:'彼が何時間もかけて作った料理はとても美味しかった。',a:'The dish that he spent hours making was very delicious.',n:'関係代名詞節の中に分詞が含まれる複合構造'},
+],'中級')}
 ${doneBtn(9)}
 `}
 
@@ -1968,6 +2112,20 @@ ${quiz([
   {q:'向こうに立っている人は誰ですか？',a:'Who is the person standing over there?',n:'現在分詞による名詞修飾'},
   {q:'毎日運動することは大切です。',a:'Exercising every day is important.',n:'動名詞が主語→is（単数）'},
 ])}
+${levelQuiz([
+  {q:'私は読書が好きです。',a:'I like reading books.',n:'like＋動名詞（-ing）'},
+  {q:'彼女は今音楽を聴いています。',a:'She is listening to music now.',n:'現在進行形：be＋-ing'},
+  {q:'泳ぐことは体に良いです。',a:'Swimming is good for your health.',n:'動名詞が主語（単数扱い）'},
+  {q:'宿題をやり終えました。',a:'I finished doing my homework.',n:'finish＋動名詞（-ing）'},
+  {q:'向こうに走っている人は誰ですか？',a:'Who is the person running over there?',n:'現在分詞による名詞後置修飾'},
+],'初級')}
+${levelQuiz([
+  {q:'彼は遅刻することを避けています。',a:'He avoids being late.',n:'avoid＋動名詞（-ing）'},
+  {q:'疲れていたにもかかわらず、彼女は働き続けました。',a:'Feeling tired, she kept working.',n:'分詞構文（付帯状況）＋keep＋-ing'},
+  {q:'その壊れた窓は明日修理されます。',a:'The broken window will be repaired tomorrow.',n:'分詞形容詞broken＋受動態の未来'},
+  {q:'彼女は友達と話すのを楽しみます。',a:'She enjoys talking with her friends.',n:'enjoy＋動名詞（目的語）'},
+  {q:'彼は仕事を終えてから家に帰りました。',a:'Having finished his work, he went home.',n:'完了形の分詞構文：Having＋過去分詞'},
+],'中級')}
 ${doneBtn(10)}
 `}
 
@@ -2092,6 +2250,20 @@ ${quiz([
   {q:'毎日英語を練習することは大切です。',a:'It is important to practice English every day.',n:'It is...to〜構文'},
   {q:'彼はそのオファーを断ることを決めました。',a:'He decided to refuse the offer.',n:'decideの後はto不定詞'},
 ])}
+${levelQuiz([
+  {q:'私は英語を上手に話したいです。',a:'I want to speak English well.',n:'want＋to不定詞（名詞的用法）'},
+  {q:'何か飲むものをください。',a:'Please give me something to drink.',n:'形容詞的用法：名詞＋to不定詞'},
+  {q:'彼女はコーヒーを買うためにカフェに行きました。',a:'She went to the café to buy coffee.',n:'副詞的用法（目的）：to＋動詞原形'},
+  {q:'彼は医者になることを決めました。',a:'He decided to become a doctor.',n:'decide＋to不定詞'},
+  {q:'このルールは覚えるのが難しいです。',a:'This rule is hard to remember.',n:'形容詞＋to不定詞（評価）'},
+],'初級')}
+${levelQuiz([
+  {q:'試験に合格するために毎晩遅くまで勉強しました。',a:'I studied late every night in order to pass the exam.',n:'in order to＝目的をより明確に表す'},
+  {q:'あなたが成功するためには努力が必要です。',a:'It is necessary for you to make an effort to succeed.',n:'It is〜for 人 to不定詞構文'},
+  {q:'彼らはその問題を解決するための方法を見つけました。',a:'They found a way to solve the problem.',n:'形容詞的用法：a way to＋動詞原形'},
+  {q:'彼が試験に合格したと聞いて嬉しかったです。',a:'I was happy to hear that he passed the exam.',n:'副詞的用法（感情の原因）＋that節'},
+  {q:'彼女が今更謝るとは驚きました。',a:'It was surprising for her to apologize at this point.',n:'It is〜for 人 to構文＋at this point'},
+],'中級')}
 ${doneBtn(11)}
 `}
 
@@ -2229,6 +2401,20 @@ ${quiz([
   {q:'彼が着いたとき、パーティーはすでに終わっていた。',a:'When he arrived, the party had already ended.',n:'過去完了：had + 過去分詞'},
   {q:'壊れた車は修理が必要です。',a:'The broken car needs to be repaired.',n:'分詞形容詞：broken（壊れた）'},
 ])}
+${levelQuiz([
+  {q:'その手紙は英語で書かれています。',a:'The letter is written in English.',n:'現在の受動態：is＋過去分詞'},
+  {q:'その車は彼によって修理されました。',a:'The car was repaired by him.',n:'過去の受動態：was＋過去分詞＋by'},
+  {q:'英語は世界中で話されています。',a:'English is spoken all over the world.',n:'受動態：is＋spoken'},
+  {q:'私はその映画をもう3回見ました。',a:'I have seen the movie three times.',n:'現在完了（経験）：have＋過去分詞'},
+  {q:'その建物は100年前に建てられました。',a:'The building was built 100 years ago.',n:'過去受動態＋ago（時の表現）'},
+],'初級')}
+${levelQuiz([
+  {q:'彼女はよく知られた作家です。',a:'She is a well-known writer.',n:'well-known＝分詞形容詞（複合語）'},
+  {q:'その問題はすでに解決されています。',a:'The problem has already been solved.',n:'現在完了受動態：have been＋過去分詞'},
+  {q:'彼はどのくらいここで働いていますか？',a:'How long has he been working here?',n:'現在完了進行形の疑問文'},
+  {q:'彼女は英語だけでなくロシア語も話せると言われています。',a:'She is said to speak not only English but also Russian.',n:'be said to＋動詞原形（伝聞の受動態）'},
+  {q:'その映画はとても感動的だと思いました。（私が感じた）',a:'I found the movie very moving.',n:'find＋O＋形容詞（SVOC）；moving＝感動させる'},
+],'中級')}
 ${doneBtn(12)}
 `}
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -2326,6 +2512,20 @@ ${quiz([
   {q:'疲れていたけれど彼は働き続けました。',a:'Although he was tired, he continued working.',n:'althoughは「にもかかわらず」'},
   {q:'彼の言ったことは本当です。',a:'What he said is true.',n:'WH節が主語：What節は単数扱い'},
 ])}
+${levelQuiz([
+  {q:'私は彼が正しいと思います。',a:'I think that he is right.',n:'that節（目的語）：that＋主語＋動詞'},
+  {q:'彼女が何時に来るか知っていますか？',a:'Do you know what time she will come?',n:'間接疑問：疑問詞＋主語＋動詞（語順注意）'},
+  {q:'私は彼女が来るかどうか分かりません。',a:"I don't know whether she will come or not.",n:'whether〜or not＝〜かどうか'},
+  {q:'彼は忙しかったので来られませんでした。',a:"Because he was busy, he couldn't come.",n:'because節＝理由の副詞節'},
+  {q:'問題はお金が足りないことです。',a:'The problem is that we do not have enough money.',n:'補語のthat節：The problem is that〜'},
+],'初級')}
+${levelQuiz([
+  {q:'彼女が何をするかは誰も知りません。',a:'Nobody knows what she will do.',n:'what節が目的語。nobody→単数動詞'},
+  {q:'問題はその計画が実行可能かどうかです。',a:'The question is whether the plan is feasible.',n:'whether節が補語節'},
+  {q:'あなたが努力することが大切です。',a:'It is important that you make an effort.',n:'It is〜that構文（形式主語）'},
+  {q:'彼は彼女が到着したとき何をしていたか教えてくれました。',a:'He told me what he was doing when she arrived.',n:'told me＋間接疑問（what節）＋when節'},
+  {q:'彼女が試験に合格したという知らせは私たちを喜ばせた。',a:'The news that she passed the exam made us happy.',n:'同格のthat節＋SVOC（make＋O＋形容詞）'},
+],'中級')}
 ${doneBtn(13)}
 `}
 
@@ -2446,6 +2646,20 @@ ${quiz([
   {q:'会議が何時に始まるか知っていますか？',a:'Do you know what time the meeting starts?',n:'間接疑問：what time + 主語 + 動詞（普通の語順）'},
   {q:'どうやってここに来ましたか？',a:'How did you get here?',n:'How疑問文：How + did + 主語 + 動詞原形'},
 ])}
+${levelQuiz([
+  {q:'あなたはどこに住んでいますか？',a:'Where do you live?',n:'WH疑問文：Where＋do＋主語＋動詞原形'},
+  {q:'彼女はなぜ泣いているのですか？',a:'Why is she crying?',n:'Why＋be動詞＋主語＋-ing'},
+  {q:'誰がその窓を割りましたか？',a:'Who broke the window?',n:'Whoが主語→Didは不要、動詞は過去形'},
+  {q:'今日は何時に起きましたか？',a:'What time did you wake up today?',n:'What time＋did＋主語＋動詞原形'},
+  {q:'あなたは学生ですよね？',a:"You're a student, aren't you?",n:'肯定文→否定の付加疑問（aren\'t you?）'},
+],'初級')}
+${levelQuiz([
+  {q:'彼はいつこのプロジェクトを始めましたか？',a:'When did he start this project?',n:'When疑問文＋did＋主語＋動詞原形'},
+  {q:'彼女がどこで英語を学んだか知っていますか？',a:'Do you know where she learned English?',n:'間接疑問：where＋主語＋動詞（普通の語順）'},
+  {q:'その映画どうでしたか？',a:'How was the movie?',n:'How＋be動詞＋主語（感想を聞く）'},
+  {q:'あなたは今何を考えていますか？',a:'What are you thinking about now?',n:'What＋be動詞＋主語＋-ing？'},
+  {q:'彼女がなぜそんなに急いでいるか教えてもらえますか？',a:'Could you tell me why she is in such a hurry?',n:'Could you tell me＋間接疑問（why節）'},
+],'中級')}
 ${doneBtn(14)}
 `}
 
@@ -2583,6 +2797,20 @@ ${quiz([
   {q:'来月京都を訪れる予定です。',a:"I'm going to visit Kyoto next month.",n:'事前の計画→be going to'},
   {q:'私はフランスに行ったことがありません。',a:"I have never been to France.",n:'現在完了（経験の否定）：have never + 過去分詞'},
 ])}
+${levelQuiz([
+  {q:'私は今本を読んでいます。',a:'I am reading a book now.',n:'現在進行形：am＋-ing'},
+  {q:'彼女は昨日友達に会いました。',a:'She met her friend yesterday.',n:'過去形：yesterday→過去形確定'},
+  {q:'私たちは来週旅行する予定です。',a:"We're going to travel next week.",n:'予定：be going to＋動詞原形'},
+  {q:'彼はここで5年間働いています。',a:'He has worked here for five years.',n:'現在完了（継続）：have＋過去分詞＋for'},
+  {q:'私が到着したとき、彼女はすでに帰っていました。',a:'When I arrived, she had already left.',n:'過去完了：had＋過去分詞（主節より前の出来事）'},
+],'初級')}
+${levelQuiz([
+  {q:'彼女は2時間ずっと電話で話しています。',a:'She has been talking on the phone for two hours.',n:'現在完了進行形：have been＋-ing（継続中）'},
+  {q:'電車が到着したとき、私たちはまだ荷造りをしていました。',a:'When the train arrived, we were still packing.',n:'過去進行形：was/were＋-ing（その時進行中）'},
+  {q:'もっと早く出発しておけばよかったです。',a:'I wish I had left earlier.',n:'I wish＋仮定法過去完了（過去の後悔）'},
+  {q:'彼は1週間後に日本を出発します。',a:'He will leave Japan in a week.',n:'in＋期間＝〜後に（未来表現）'},
+  {q:'彼女がここに来るまでに、私は仕事を終えておきます。',a:'I will have finished my work by the time she comes here.',n:'未来完了：will have＋過去分詞＋by the time'},
+],'中級')}
 ${doneBtn(15)}
 `}
 
@@ -2690,6 +2918,20 @@ ${quiz([
   {q:'彼は英語だけでなくフランス語も話せます。',a:'He can speak not only English but also French.',n:'not only A but also B'},
   {q:'私が駅に着いたとき、電車はすでに出発していました。',a:'When I arrived at the station, the train had already left.',n:'過去完了：had + 過去分詞（主節より前の出来事）'},
 ])}
+${levelQuiz([
+  {q:'私は音楽と映画が好きです。',a:'I like music and movies.',n:'and＝〜と（等位接続詞）'},
+  {q:'雨が降っていたのでタクシーに乗りました。',a:'It was raining, so I took a taxi.',n:'so＝だから（結果の接続詞）'},
+  {q:'彼は疲れていたけれど練習しました。',a:'He was tired, but he practiced.',n:'but＝しかし（逆接の接続詞）'},
+  {q:'急がないとバスに乗り遅れます。',a:"Unless you hurry, you'll miss the bus.",n:'unless＝〜しない限り'},
+  {q:'彼女は本を読みながらコーヒーを飲んでいました。',a:'She was drinking coffee while reading a book.',n:'while＝〜しながら（同時進行）'},
+],'初級')}
+${levelQuiz([
+  {q:'彼は賢いだけでなく親切でもあります。',a:'He is not only smart but also kind.',n:'not only A but also B（AだけでなくBも）'},
+  {q:'彼女は猫も犬も好きです。',a:'She likes both cats and dogs.',n:'both A and B（AもBも）'},
+  {q:'疲れていたにもかかわらず、彼女は仕事を続けました。',a:'Although she was tired, she continued working.',n:'although＝にもかかわらず（逆接の従属接続詞）'},
+  {q:'彼は英語もドイツ語も話せません。',a:'He can speak neither English nor German.',n:'neither A nor B（AもBも〜ない）'},
+  {q:'彼女が到着するや否や、会議は始まりました。',a:'As soon as she arrived, the meeting started.',n:'as soon as＝〜するや否や（時の接続詞）'},
+],'中級')}
 ${doneBtn(16)}
 `}
 
